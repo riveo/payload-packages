@@ -34,8 +34,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier \"**/*.{cjs,mjs,js,ts,tsx,json,css,md}\" --write",
-    "format:check": "prettier \"**/*.{cjs,mjs,js,ts,tsx,json,css,md}\" --check",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
     "clean": "rimraf dist",
     "prepublishOnly": "npm run clean && npm run build"
   },
