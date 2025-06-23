@@ -110,8 +110,8 @@ importers:
         version: 8.34.1(eslint@9.29.0)(typescript@5.8.3)
     optionalDependencies:
       '@libsql/darwin-arm64':
-        specifier: 0.4.7
-        version: 0.4.7
+        specifier: 0.5.13
+        version: 0.5.13
       '@libsql/linux-arm64-gnu':
         specifier: 0.4.7
         version: 0.4.7
@@ -1065,6 +1065,11 @@ packages:
 
   '@libsql/darwin-arm64@0.4.7':
     resolution: {integrity: sha512-yOL742IfWUlUevnI5PdnIT4fryY3LYTdLm56bnY0wXBw7dhFcnjuA7jrH3oSVz2mjZTHujxoITgAE7V6Z+eAbg==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@libsql/darwin-arm64@0.5.13':
+    resolution: {integrity: sha512-ASz/EAMLDLx3oq9PVvZ4zBXXHbz2TxtxUwX2xpTRFR4V4uSHAN07+jpLu3aK5HUBLuv58z7+GjaL5w/cyjR28Q==}
     cpu: [arm64]
     os: [darwin]
 
@@ -4291,6 +4296,9 @@ snapshots:
       js-base64: 3.7.7
 
   '@libsql/darwin-arm64@0.4.7':
+    optional: true
+
+  '@libsql/darwin-arm64@0.5.13':
     optional: true
 
   '@libsql/darwin-x64@0.4.7':

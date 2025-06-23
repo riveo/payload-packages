@@ -49,7 +49,7 @@
     "node": "^22.11"
   },
   "optionalDependencies": {
-    "@libsql/darwin-arm64": "0.4.7",
+    "@libsql/darwin-arm64": "0.5.13",
     "@libsql/linux-arm64-gnu": "0.4.7",
     "@libsql/linux-x64-gnu": "0.5.13"
   }
