@@ -22,7 +22,7 @@
     "@payloadcms/db-sqlite": "^3.43.0",
     "@payloadcms/next": "^3.43.0",
     "@payloadcms/richtext-lexical": "^3.43.0",
-    "@payloadcms/ui": "^3.43.0",
+    "@payloadcms/ui": "^3.44.0",
     "@riveo/payload-purge-cache-plugin": "workspace:*",
     "graphql": "^16.11.0",
     "next": "^15.3.4",
