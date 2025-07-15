@@ -53,6 +53,9 @@ importers:
       '@riveo/payload-purge-cache-plugin':
         specifier: workspace:*
         version: link:../packages/purge-cache-plugin
+      '@riveo/payload-utils':
+        specifier: workspace:*
+        version: link:../packages/utils
       graphql:
         specifier: ^16.11.0
         version: 16.11.0
@@ -173,6 +176,58 @@ importers:
       typescript-eslint:
         specifier: ^8.35.0
         version: 8.35.0(eslint@9.30.0)(typescript@5.8.3)
+
+  packages/utils:
+    dependencies:
+      '@payloadcms/ui':
+        specifier: ^3.0.0
+        version: 3.43.0(@types/react@19.1.8)(monaco-editor@0.52.2)(next@15.3.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.43.0(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+      next:
+        specifier: ^15.0.0
+        version: 15.3.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4)
+      payload:
+        specifier: ^3.0.0
+        version: 3.43.0(graphql@16.11.0)(typescript@5.8.3)
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.29.0
+        version: 9.29.0
+      '@types/node':
+        specifier: ^22.15.32
+        version: 22.15.32
+      '@types/react':
+        specifier: ^19.1.8
+        version: 19.1.8
+      '@types/react-dom':
+        specifier: ^19.1.6
+        version: 19.1.6(@types/react@19.1.8)
+      eslint:
+        specifier: ^9.29.0
+        version: 9.29.0
+      eslint-config-next:
+        specifier: ^15.3.4
+        version: 15.3.4(eslint@9.29.0)(typescript@5.8.3)
+      eslint-config-prettier:
+        specifier: ^10.1.5
+        version: 10.1.5(eslint@9.29.0)
+      eslint-plugin-import:
+        specifier: ^2.31.0
+        version: 2.31.0(@typescript-eslint/parser@8.34.1(eslint@9.29.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.29.0)
+      prettier:
+        specifier: ^3.5.3
+        version: 3.5.3
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+      typescript-eslint:
+        specifier: ^8.34.1
+        version: 8.34.1(eslint@9.29.0)(typescript@5.8.3)
 
 packages:
 
