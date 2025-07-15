@@ -1,3 +1,4 @@
+import { slugField } from '@riveo/payload-utils/fields';
 import type { CollectionConfig } from 'payload';
 
 export const Pages: CollectionConfig = {
@@ -16,6 +17,11 @@ export const Pages: CollectionConfig = {
     {
       name: 'content',
       type: 'richText',
+    },
+    {
+      type: 'group',
+      name: 'riveoUtils',
+      fields: [slugField({ autogenerateSourceField: 'title' })],
     },
   ],
 };

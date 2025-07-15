@@ -138,6 +138,12 @@ export interface Page {
     };
     [k: string]: unknown;
   } | null;
+  riveoUtils: {
+    slug: {
+      value: string;
+      auto?: boolean | null;
+    };
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -246,6 +252,16 @@ export interface PagesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   content?: T;
+  riveoUtils?:
+    | T
+    | {
+        slug?:
+          | T
+          | {
+              value?: T;
+              auto?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
 }
