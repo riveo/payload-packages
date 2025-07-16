@@ -5,7 +5,8 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import purgeCachePlugin, {
   getNextjsPurgerAction,
 } from '@riveo/payload-purge-cache-plugin';
-import { buildConfig } from 'payload';
+import { groupContentTypes } from '@riveo/payload-utils';
+import { buildConfig, type CollectionConfig } from 'payload';
 import sharp from 'sharp';
 import { migrations } from '../migrations';
 import { Media } from './collections/Media';
@@ -31,7 +32,13 @@ export default buildConfig({
       baseDir: dirname,
     },
   },
-  collections: [Pages, Users, Media],
+  collections: groupContentTypes<CollectionConfig>(
+    {
+      group: 'Content',
+      items: [Pages, Media],
+    },
+    Users,
+  ),
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET ?? '',
   typescript: {

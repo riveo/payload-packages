@@ -5,6 +5,10 @@
   "license": "MIT",
   "type": "module",
   "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
     "./fields": {
       "import": "./dist/exports/fields.js",
       "types": "./dist/exports/fields.d.ts"
