@@ -1,4 +1,4 @@
-import { slugField } from '@riveo/payload-utils/fields';
+import {seoField, slugField} from "@riveo/payload-utils/fields";
 import type { CollectionConfig } from 'payload';
 
 export const Pages: CollectionConfig = {
@@ -23,5 +23,6 @@ export const Pages: CollectionConfig = {
       name: 'riveoUtils',
       fields: [slugField({ autogenerateSourceField: 'title' })],
     },
+    seoField(),
   ],
 };
