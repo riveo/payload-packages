@@ -1,5 +1,7 @@
+import type { TFunction } from '@payloadcms/translations';
 import type { GroupField } from 'payload';
-import type {FieldOptions} from "../types.js";
+import type { RiveoUtilsTranslationKeys } from '../../translations/index.js';
+import type { FieldOptions } from '../types.js';
 import { formatSlugHook } from './formatSlug.js';
 
 type SlugFieldOptions = FieldOptions<GroupField> & {
@@ -10,7 +12,10 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
   return {
     name: 'slug',
     type: 'group',
-    label: 'Slug',
+    label: ({ t }) =>
+      (t as TFunction<RiveoUtilsTranslationKeys>)(
+        'riveo:utils:fields:slug:label',
+      ),
     localized: true,
     fields: [
       {
@@ -18,7 +23,6 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
         name: 'value',
         unique: true,
         index: true,
-        required: true,
         hooks: {
           beforeValidate: [formatSlugHook(options?.autogenerateSourceField)],
         },
@@ -40,9 +44,9 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
       hideGutter: true,
       ...(options?.overrides?.admin ?? {}),
       components: {
-        Cell: '@/fields/slug/components/Cell',
+        Cell: '@riveo/payload-utils/components#SlugCell',
         Field: {
-          path: '@/fields/slug/components/Field',
+          path: '@riveo/payload-utils/components#SlugField',
           clientProps: {
             autogenerateSourceField: options?.autogenerateSourceField,
           },

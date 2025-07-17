@@ -8,9 +8,14 @@ import {
   useField,
   useForm,
   useFormFields,
+  useTranslation,
 } from '@payloadcms/ui';
 import type { TextFieldClientProps } from 'payload';
 import { useCallback, useEffect } from 'react';
+import type {
+  RiveoUtilsTranslationKeys,
+  RiveoUtilsTranslations,
+} from '../../../translations/index.js';
 import { formatSlug } from '../formatSlug.js';
 
 import './slug.scss';
@@ -19,13 +24,17 @@ type SlugFieldProps = {
   autogenerateSourceField?: string;
 } & TextFieldClientProps;
 
-const Field = ({
+const FieldClient = ({
   field,
   autogenerateSourceField,
   path,
   readOnly,
 }: SlugFieldProps) => {
   const { label, localized } = field;
+  const { t } = useTranslation<
+    RiveoUtilsTranslations,
+    RiveoUtilsTranslationKeys
+  >();
 
   const valueFieldPath = `${path}.value`;
   const autoModeFieldPath = `${path}.auto`;
@@ -105,7 +114,11 @@ const Field = ({
                 buttonStyle="none"
                 className="auto-mode-trigger"
               >
-                {isAutoMode ? 'edit' : 'autogenerate'}
+                {isAutoMode
+                  ? t('riveo:utils:fields:slug:autogenerateToggle:edit')
+                  : t(
+                      'riveo:utils:fields:slug:autogenerateToggle:autogenerate',
+                    )}
               </Button>
             </div>
           )
@@ -115,4 +128,4 @@ const Field = ({
   );
 };
 
-export default Field;
+export default FieldClient;
