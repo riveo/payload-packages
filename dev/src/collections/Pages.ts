@@ -1,9 +1,17 @@
-import {seoField, slugField} from "@riveo/payload-utils/fields";
+import {seoField, slugField, internalTitleField} from "@riveo/payload-utils/fields";
 import type { CollectionConfig } from 'payload';
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
   fields: [
+    internalTitleField(),
+    internalTitleField({
+      generateFrom: 'title',
+      overrides: {
+        name: 'internalTitleAuto',
+        label: 'Internal Title Auto Generated',
+      },
+    }),
     {
       name: 'title',
       type: 'text',

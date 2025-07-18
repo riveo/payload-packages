@@ -121,6 +121,8 @@ export interface UserAuthOperations {
  */
 export interface Page {
   id: number;
+  internalTitle?: string | null;
+  internalTitleAuto?: string | null;
   title?: string | null;
   slug: string;
   content?: {
@@ -258,6 +260,8 @@ export interface PayloadMigration {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
+  internalTitle?: T;
+  internalTitleAuto?: T;
   title?: T;
   slug?: T;
   content?: T;

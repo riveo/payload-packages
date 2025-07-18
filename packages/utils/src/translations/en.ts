@@ -16,6 +16,9 @@ const en: GenericTranslationsObject = {
             autogenerate: 'autogenerate',
           },
         },
+        internalTitle: {
+          label: 'Internal Title',
+        }
       },
     },
   },
