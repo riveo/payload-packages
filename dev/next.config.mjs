@@ -1,4 +1,9 @@
+import NextBundleAnalyzer from '@next/bundle-analyzer';
 import { withPayload } from '@payloadcms/next/withPayload';
+
+const withBundleAnalyzer = NextBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -13,4 +18,4 @@ const nextConfig = {
   },
 };
 
-export default withPayload(nextConfig, { devBundleServerPackages: false });
+export default withBundleAnalyzer(withPayload(nextConfig, { devBundleServerPackages: false }));
