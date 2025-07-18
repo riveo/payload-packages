@@ -6,6 +6,10 @@ export { default as groupContentTypes } from './groupContentTypes.js';
 const riveoEssentialsPlugin: () => Plugin = () => (incomingConfig) => {
   return {
     ...incomingConfig,
+    admin: {
+      avatar: 'default',
+      ...(incomingConfig.admin ?? {}),
+    },
     i18n: {
       ...(incomingConfig.i18n ?? {}),
       translations: deepMerge(
