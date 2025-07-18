@@ -140,15 +140,30 @@ export interface Page {
     };
     [k: string]: unknown;
   } | null;
-  riveoUtils?: {
+  riveoUtils: {
     slug?: {
       value?: string | null;
       auto?: boolean | null;
     };
+    link: LinkField;
   };
   seo?: SeoField;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LinkField".
+ */
+export interface LinkField {
+  text: string;
+  linkType: 'custom' | 'internal';
+  url?: string | null;
+  doc?: {
+    relationTo: 'pages';
+    value: number | Page;
+  } | null;
+  newTab?: boolean | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -274,10 +289,22 @@ export interface PagesSelect<T extends boolean = true> {
               value?: T;
               auto?: T;
             };
+        link?: T | LinkFieldSelect<T>;
       };
   seo?: T | SeoFieldSelect<T>;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LinkField_select".
+ */
+export interface LinkFieldSelect<T extends boolean = true> {
+  text?: T;
+  linkType?: T;
+  url?: T;
+  doc?: T;
+  newTab?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

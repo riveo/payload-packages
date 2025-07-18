@@ -2,6 +2,7 @@ import {
   seoField,
   slugField,
   internalTitleField,
+  linkField,
 } from '@riveo/payload-utils/fields';
 import type { CollectionConfig } from 'payload';
 
@@ -33,7 +34,10 @@ export const Pages: CollectionConfig = {
     {
       type: 'group',
       name: 'riveoUtils',
-      fields: [slugField({ autogenerateSourceField: 'title' })],
+      fields: [
+        slugField({ autogenerateSourceField: 'title' }),
+        linkField({ name: 'link', internalLinkCollections: ['pages'] }),
+      ],
     },
     seoField(),
   ],
