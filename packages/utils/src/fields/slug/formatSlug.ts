@@ -1,9 +1,11 @@
 import type { FieldHook } from 'payload';
 import slugify from 'slugify';
 
-const canUseValue = (value: unknown): value is string|null|undefined => {
-  return value === null || typeof value === 'string' || typeof value === 'undefined';
-}
+const canUseValue = (value: unknown): value is string | null | undefined => {
+  return (
+    value === null || typeof value === 'string' || typeof value === 'undefined'
+  );
+};
 
 export const formatSlug = (value: string) =>
   slugify.default(value.replace(/\/+/g, ' '), {

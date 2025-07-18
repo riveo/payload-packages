@@ -18,7 +18,7 @@ const en: GenericTranslationsObject = {
         },
         internalTitle: {
           label: 'Internal Title',
-        }
+        },
       },
     },
   },

@@ -1,5 +1,5 @@
 import type { TFunction } from '@payloadcms/translations';
-import {get,has} from 'lodash-es';
+import { get, has } from 'lodash-es';
 import type { TextField } from 'payload';
 import type { RiveoUtilsTranslationKeys } from '../translations/index.js';
 import type { FieldOptions } from './types.js';

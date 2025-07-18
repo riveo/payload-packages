@@ -18,4 +18,6 @@ const nextConfig = {
   },
 };
 
-export default withBundleAnalyzer(withPayload(nextConfig, { devBundleServerPackages: false }));
+export default withBundleAnalyzer(
+  withPayload(nextConfig, { devBundleServerPackages: false }),
+);

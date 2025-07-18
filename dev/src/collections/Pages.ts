@@ -1,4 +1,8 @@
-import {seoField, slugField, internalTitleField} from "@riveo/payload-utils/fields";
+import {
+  seoField,
+  slugField,
+  internalTitleField,
+} from '@riveo/payload-utils/fields';
 import type { CollectionConfig } from 'payload';
 
 export const Pages: CollectionConfig = {
