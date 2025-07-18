@@ -19,6 +19,9 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
     localized: true,
     fields: [
       {
+        admin: {
+          disableListColumn: true,
+        },
         type: 'text',
         name: 'value',
         unique: true,
