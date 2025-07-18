@@ -44,7 +44,7 @@ export const Pages: CollectionConfig = {
       type: 'group',
       name: 'riveoUtils',
       fields: [
-        slugField({ autogenerateSourceField: 'title' }),
+        slugField({ generateFrom: 'title' }),
         linkField({ name: 'link', internalLinkCollections: ['pages'] }),
       ],
     },

@@ -1,3 +1,4 @@
+import { get, has } from 'lodash-es';
 import type { FieldHook } from 'payload';
 import slugify from 'slugify';
 
@@ -14,26 +15,18 @@ export const formatSlug = (value: string) =>
   });
 
 export const formatSlugHook =
-  (autogenerateSourceField: string | undefined): FieldHook =>
+  (generateFrom: string | undefined): FieldHook =>
   ({ data, value }) => {
     if (canUseValue(value)) {
       return formatSlug(value ?? '');
     }
 
-    if (
-      autogenerateSourceField &&
-      !value &&
-      data &&
-      autogenerateSourceField in data
-    ) {
+    if (generateFrom && !value && data && has(data, generateFrom)) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const slugSourceData = data[autogenerateSourceField];
+      const slugSourceData = get(data, generateFrom);
 
       if (slugSourceData && typeof slugSourceData === 'string') {
         return formatSlug(slugSourceData);
       }
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return value;
   };

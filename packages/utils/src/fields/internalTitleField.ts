@@ -13,16 +13,16 @@ type InternalTitleOptions = FieldOptions<TextField & { hasMany: false }> & {
 
 const internalTitleField = (options?: InternalTitleOptions): TextField => {
   const beforeChange = options?.overrides?.hooks?.beforeChange ?? [];
-  const autogenerateSourceField = options?.generateFrom;
+  const generateFrom = options?.generateFrom;
 
-  if (autogenerateSourceField) {
+  if (generateFrom) {
     beforeChange.push(({ value, data, collection }) => {
-      if (!data || value || !has(data, autogenerateSourceField)) {
+      if (!data || value || !has(data, generateFrom)) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return value;
       }
 
-      const possibleValue = `${get(data, autogenerateSourceField)}`;
+      const possibleValue = `${get(data, generateFrom)}`;
       if (possibleValue) {
         return possibleValue;
       }
