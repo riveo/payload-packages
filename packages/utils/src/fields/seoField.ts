@@ -4,6 +4,9 @@ import type { RiveoUtilsTranslationKeys } from '../translations/index.js';
 import type { FieldOptions } from './types.js';
 
 type SeoFieldOptions = FieldOptions<GroupField> & {
+  /**
+   * Media collection slug to use for SEO image
+   */
   mediaCollection?: CollectionSlug | false;
 };
 

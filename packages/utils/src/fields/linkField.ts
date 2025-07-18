@@ -2,7 +2,13 @@ import type { CollectionSlug, GroupField, OptionObject } from 'payload';
 import type { FieldOptions } from './types.js';
 
 type LinkFieldOptions = FieldOptions<GroupField> & {
+  /**
+   * Name of the field. And be rewriteen by `overrides.name`
+   */
   name: string;
+  /**
+   * Collection slugs that are allowed as Internal Link
+   */
   internalLinkCollections?: CollectionSlug[];
 };
 

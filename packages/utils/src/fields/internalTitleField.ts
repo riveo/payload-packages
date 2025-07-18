@@ -5,6 +5,9 @@ import type { RiveoUtilsTranslationKeys } from '../translations/index.js';
 import type { FieldOptions } from './types.js';
 
 type InternalTitleOptions = FieldOptions<TextField & { hasMany: false }> & {
+  /**
+   * The field used to autogenerate internal title when it's empty.
+   */
   generateFrom?: string;
 };
 

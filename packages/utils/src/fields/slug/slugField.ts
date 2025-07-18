@@ -5,6 +5,9 @@ import type { FieldOptions } from '../types.js';
 import { formatSlugHook } from './formatSlug.js';
 
 type SlugFieldOptions = FieldOptions<GroupField> & {
+  /**
+   * The field used to autogenerate slug
+   */
   generateFrom?: string;
 };
 

@@ -13,6 +13,10 @@ type Config<T extends Collection> = (T extends CollectionConfig
   ? Group<CollectionConfig>
   : Group<GlobalConfig>)[];
 
+/**
+ * Groups collections or globals using its config's `group` field.
+ * Example usage: `groupContentTypes<CollectionConfig>(UngroupedCollection, { group: 'Content', items: [Collection1, Collection2] })`
+ */
 const groupContentTypes = <T extends Collection>(...items: Config<T>): T[] => {
   return items
     .map((config) => {

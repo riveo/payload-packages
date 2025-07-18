@@ -10,19 +10,52 @@ type CollectionOptions = Exclude<
 >;
 
 type S3PluginConfig = {
+  /**
+   * Enable or disable the plugin.
+   *
+   * Default: true
+   */
   enabled?: boolean;
+  /**
+   * Collections to apply the S3 Storage plugin to
+   */
   collections: UploadCollectionSlug[];
 
+  /**
+   * Disable direct public access to uploaded files.
+   * When true, the ACL on uploaded files is set to `private` and all files are accessed through Payload instead of direct links
+   */
   disablePublicAccess: boolean;
 
+  /**
+   * S3 Access Key
+   */
   accessKeyId: string;
+  /**
+   * S3 Secret Access Key
+   */
   secretAccessKey: string;
+  /**
+   * Bucket name
+   */
   bucket: string;
 
+  /**
+   * S3 Bucket's Region
+   */
   region?: string;
+  /**
+   * S3 Endpoint
+   */
   endpoint?: string;
+  /**
+   * Public endpoint to generate direct URLs
+   */
   publicEndpoint?: string;
 
+  /**
+   * Overrides of the original Payload S3 Storage Plugin
+   */
   overrides?: Partial<S3StorageOptions>;
 };
 
