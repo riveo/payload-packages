@@ -2,6 +2,16 @@
 
 A collection of reusable utilities for [Payload CMS](https://payloadcms.com/), commonly shared across multiple projects — including, but not limited to, those developed at RIVEO.
 
+## Installation
+
+```shell
+npm install @riveo/payload-utils
+```
+
+## Usage
+
+Register the `riveoUtilsPlugin` in your Payload's config.
+
 ## Features
 
 ### Fields
@@ -33,12 +43,6 @@ Preconfigured field definitions ready to use in collections or globals:
     Users,
   );
   ```
-
-## Installation
-
-```shell
-npm install @riveo/payload-utils
-```
 
 ## License
 
