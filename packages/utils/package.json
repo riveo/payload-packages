@@ -16,6 +16,10 @@
     "./components": {
       "import": "./dist/exports/components.js",
       "types": "./dist/exports/components.d.ts"
+    },
+    "./plugins": {
+      "import": "./dist/exports/plugins.js",
+      "types": "./dist/exports/plugins.d.ts"
     }
   },
   "files": [
