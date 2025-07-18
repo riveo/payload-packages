@@ -10,6 +10,7 @@ import {
   useFormFields,
   useTranslation,
 } from '@payloadcms/ui';
+import { get, has } from 'lodash-es';
 import type { TextFieldClientProps } from 'payload';
 import { useCallback, useEffect } from 'react';
 import type {
@@ -50,8 +51,8 @@ const FieldClient = ({
   });
 
   const sourceValue = useFormFields(([fields]) => {
-    return autogenerateSourceField
-      ? (fields[autogenerateSourceField]?.value as string)
+    return autogenerateSourceField && has(fields, autogenerateSourceField)
+      ? get(fields, autogenerateSourceField)?.value?.toString()
       : undefined;
   });
 
