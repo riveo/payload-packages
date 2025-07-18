@@ -49,6 +49,10 @@ const seoField = (options?: SeoFieldOptions): GroupField => {
     interfaceName: 'SeoField',
     localized: true,
     name: 'seo',
+    label: ({ t }) =>
+      (t as TFunction<RiveoUtilsTranslationKeys>)(
+        'riveo:utils:fields:seo:label',
+      ),
     ...(options?.overrides ?? {}),
     admin: {
       disableListColumn: true,

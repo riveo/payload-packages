@@ -5,6 +5,7 @@ const en: GenericTranslationsObject = {
     utils: {
       fields: {
         seo: {
+          label: 'SEO',
           title: 'Title',
           description: 'Description',
           image: 'Image',
