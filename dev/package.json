@@ -24,6 +24,7 @@
     "@payloadcms/richtext-lexical": "^3.43.0",
     "@payloadcms/ui": "^3.43.0",
     "@riveo/payload-purge-cache-plugin": "workspace:*",
+    "@riveo/payload-utils": "workspace:*",
     "graphql": "^16.11.0",
     "next": "^15.3.4",
     "payload": "^3.43.0",
@@ -34,6 +35,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.29.0",
+    "@next/bundle-analyzer": "^15.4.1",
     "@types/node": "^22.15.32",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

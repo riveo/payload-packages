@@ -37,7 +37,7 @@ jobs:
         run: pnpm install
 
       - name: Prebuild types
-        run: pnpm build:plugin-types
+        run: pnpm build:packages-types
 
       - name: Lint
         run: pnpm --filter "...[origin/${{ env.BASE_REF }}]" run lint

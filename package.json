@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build:plugins": "pnpm -r --filter './packages/*-plugin' build",
-    "build:plugin-types": "pnpm -r --filter './packages/*-plugin' build:types",
+    "build:packages": "pnpm -r --filter './packages/*' build",
+    "build:packages-types": "pnpm -r --filter './packages/*' build:types",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

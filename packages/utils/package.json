@@ -1,0 +1,82 @@
+{
+  "name": "@riveo/payload-utils",
+  "version": "0.1.1",
+  "description": "Payload Utils reused across projects",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./fields": {
+      "import": "./dist/exports/fields.js",
+      "types": "./dist/exports/fields.d.ts"
+    },
+    "./components": {
+      "import": "./dist/exports/components.js",
+      "types": "./dist/exports/components.d.ts"
+    },
+    "./plugins": {
+      "import": "./dist/exports/plugins.js",
+      "types": "./dist/exports/plugins.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "payload",
+    "cms",
+    "typescript",
+    "react"
+  ],
+  "scripts": {
+    "prebuild": "mkdir -p dist/fields/slug/components && cp src/fields/slug/components/slug.scss dist/fields/slug/components/slug.scss",
+    "build": "tsc",
+    "build:types": "tsc --emitDeclarationOnly",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "author": "Piotr Rzeczkowski <pr@riveolabs.com> (https://notesofdev.com/)",
+  "homepage": "https://github.com/riveo/payload-packages",
+  "peerDependencies": {
+    "@payloadcms/storage-s3": "^3.0.0",
+    "@payloadcms/translations": "^3.0.0",
+    "@payloadcms/ui": "^3.0.0",
+    "next": "^15.0.0",
+    "payload": "^3.0.0",
+    "react": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@payloadcms/storage-s3": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^22.15.32",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "eslint": "^9.29.0",
+    "eslint-config-next": "^15.3.4",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-import": "^2.31.0",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.1"
+  },
+  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39",
+  "dependencies": {
+    "lodash-es": "^4.17.21",
+    "slugify": "^1.6.6"
+  }
+}
