@@ -5,7 +5,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import purgeCachePlugin, {
   getNextjsPurgerAction,
 } from '@riveo/payload-purge-cache-plugin';
-import riveoEssentialsPlugin, { groupContentTypes } from '@riveo/payload-utils';
+import riveoUtilsPlugin, { groupContentTypes } from '@riveo/payload-utils';
 import { buildConfig, type CollectionConfig } from 'payload';
 import sharp from 'sharp';
 import { migrations } from '../migrations';
@@ -62,6 +62,6 @@ export default buildConfig({
         },
       ],
     }),
-    riveoEssentialsPlugin(),
+    riveoUtilsPlugin(),
   ],
 });

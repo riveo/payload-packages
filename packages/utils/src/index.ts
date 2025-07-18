@@ -3,7 +3,7 @@ import { translations } from './translations/index.js';
 
 export { default as groupContentTypes } from './groupContentTypes.js';
 
-const riveoEssentialsPlugin: () => Plugin = () => (incomingConfig) => {
+export const riveoUtilsPlugin: () => Plugin = () => (incomingConfig) => {
   return {
     ...incomingConfig,
     admin: {
@@ -20,4 +20,4 @@ const riveoEssentialsPlugin: () => Plugin = () => (incomingConfig) => {
   };
 };
 
-export default riveoEssentialsPlugin;
+export default riveoUtilsPlugin;
