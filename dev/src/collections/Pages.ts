@@ -7,6 +7,15 @@ import {
 import type { CollectionConfig } from 'payload';
 
 export const Pages: CollectionConfig = {
+  admin: {
+    defaultColumns: [
+      'id',
+      'internalTitle',
+      'internalTitleAuto',
+      'riveoUtils.slug',
+    ],
+    useAsTitle: 'internalTitleAuto',
+  },
   slug: 'pages',
   fields: [
     internalTitleField(),
