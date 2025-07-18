@@ -5,7 +5,7 @@ import type { FieldOptions } from '../types.js';
 import { formatSlugHook } from './formatSlug.js';
 
 type SlugFieldOptions = FieldOptions<GroupField> & {
-  autogenerateSourceField?: string;
+  generateFrom?: string;
 };
 
 const slugField = (options?: SlugFieldOptions): GroupField => {
@@ -27,7 +27,7 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
         unique: true,
         index: true,
         hooks: {
-          beforeValidate: [formatSlugHook(options?.autogenerateSourceField)],
+          beforeValidate: [formatSlugHook(options?.generateFrom)],
         },
       },
       {
@@ -51,7 +51,7 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
         Field: {
           path: '@riveo/payload-utils/components#SlugField',
           clientProps: {
-            autogenerateSourceField: options?.autogenerateSourceField,
+            generateFrom: options?.generateFrom,
           },
         },
         ...(options?.overrides?.admin?.components ?? {}),

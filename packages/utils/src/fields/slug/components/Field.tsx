@@ -22,12 +22,12 @@ import { formatSlug } from '../formatSlug.js';
 import './slug.scss';
 
 type SlugFieldProps = {
-  autogenerateSourceField?: string;
+  generateFrom?: string;
 } & TextFieldClientProps;
 
 const FieldClient = ({
   field,
-  autogenerateSourceField,
+  generateFrom,
   path,
   readOnly,
 }: SlugFieldProps) => {
@@ -47,12 +47,12 @@ const FieldClient = ({
   const { dispatchFields, setModified } = useForm();
 
   const isAutoMode = useFormFields(([fields]) => {
-    return !!autogenerateSourceField && !!fields[autoModeFieldPath]?.value;
+    return !!generateFrom && !!fields[autoModeFieldPath]?.value;
   });
 
   const sourceValue = useFormFields(([fields]) => {
-    return autogenerateSourceField && has(fields, autogenerateSourceField)
-      ? get(fields, autogenerateSourceField)?.value?.toString()
+    return generateFrom && has(fields, generateFrom)
+      ? get(fields, generateFrom)?.value?.toString()
       : undefined;
   });
 
@@ -108,7 +108,7 @@ const FieldClient = ({
         }
         showError={showError}
         AfterInput={
-          !!autogenerateSourceField && (
+          !!generateFrom && (
             <div className="auto-mode-trigger-wrap">
               <Button
                 onClick={onClick}
