@@ -59,8 +59,8 @@ const linkField = (options: LinkFieldOptions): GroupField => {
     },
   ];
 
-  fields.push(
-    {
+  if (hasInternalLink) {
+    fields.push({
       name: 'doc',
       label: ({ t }) => t('fields:chooseDocumentToLink'),
       type: 'relationship',
@@ -70,20 +70,19 @@ const linkField = (options: LinkFieldOptions): GroupField => {
       admin: {
         condition: (_, siblingData) => siblingData?.linkType === 'internal',
       },
-    },
-    {
-      type: 'checkbox',
-      name: 'newTab',
-      label: ({ t }) => t('fields:openInNewTab'),
-    },
-  );
+    });
 
-  if (hasInternalLink) {
     linkTypeOptions.push({
       label: ({ t }) => t('fields:internalLink'),
       value: LinkTypeValue.internal,
     });
   }
+
+  fields.push({
+    type: 'checkbox',
+    name: 'newTab',
+    label: ({ t }) => t('fields:openInNewTab'),
+  });
 
   fields.push(...(options?.overrides?.fields ?? []));
 
