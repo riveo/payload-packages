@@ -1,5 +1,6 @@
 import type { TFunction } from '@payloadcms/translations';
-import type { GroupField } from 'payload';
+import type { GroupField, TextFieldSingleValidation } from 'payload';
+import { text } from 'payload/shared';
 import type { RiveoUtilsTranslationKeys } from '../../translations/index.js';
 import type { FieldOptions } from '../types.js';
 import { formatSlugHook } from './formatSlug.js';
@@ -9,6 +10,11 @@ type SlugFieldOptions = FieldOptions<GroupField> & {
    * The field used to autogenerate slug
    */
   generateFrom?: string;
+
+  /**
+   * Allow empty string as slug
+   */
+  allowEmptyValue?: boolean;
 };
 
 const slugField = (options?: SlugFieldOptions): GroupField => {
@@ -29,9 +35,16 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
         name: 'value',
         unique: true,
         index: true,
+        required: true,
         hooks: {
           beforeValidate: [formatSlugHook(options?.generateFrom)],
         },
+        validate: ((value, validateOptions) => {
+          return text(value, {
+            ...validateOptions,
+            required: options?.allowEmptyValue !== true,
+          });
+        }) satisfies TextFieldSingleValidation,
       },
       {
         type: 'checkbox',
