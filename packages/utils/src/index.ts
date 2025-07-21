@@ -1,5 +1,5 @@
 import { deepMerge, type Plugin } from 'payload';
-import { translations } from './translations/index.js';
+import { getTranslationsWithEnglishFallbackOnMissingLanguages } from './translations/index.js';
 
 export { default as groupContentTypes } from './groupContentTypes.js';
 
@@ -14,7 +14,9 @@ const riveoUtilsPlugin: () => Plugin = () => (incomingConfig) => {
       ...(incomingConfig.i18n ?? {}),
       translations: deepMerge(
         incomingConfig?.i18n?.translations ?? {},
-        translations,
+        getTranslationsWithEnglishFallbackOnMissingLanguages(
+          incomingConfig?.i18n?.supportedLanguages,
+        ),
       ),
     },
   };
