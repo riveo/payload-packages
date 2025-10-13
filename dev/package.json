@@ -27,7 +27,7 @@
     "@riveo/payload-utils": "workspace:*",
     "graphql": "^16.11.0",
     "next": "^15.3.4",
-    "payload": "^3.43.0",
+    "payload": "^3.59.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "sharp": "^0.34.2"
