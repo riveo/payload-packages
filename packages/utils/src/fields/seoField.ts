@@ -15,6 +15,7 @@ const seoField = (options?: SeoFieldOptions): GroupField => {
     {
       type: 'text',
       name: 'title',
+      localized: true,
       label: ({ t }) =>
         (t as TFunction<RiveoUtilsTranslationKeys>)(
           'riveo:utils:fields:seo:title',
@@ -23,6 +24,7 @@ const seoField = (options?: SeoFieldOptions): GroupField => {
     {
       type: 'textarea',
       name: 'description',
+      localized: true,
       label: ({ t }) =>
         (t as TFunction<RiveoUtilsTranslationKeys>)(
           'riveo:utils:fields:seo:description',
@@ -34,6 +36,7 @@ const seoField = (options?: SeoFieldOptions): GroupField => {
     fields.push({
       name: 'image',
       type: 'upload',
+      localized: true,
       label: ({ t }) =>
         (t as TFunction<RiveoUtilsTranslationKeys>)(
           'riveo:utils:fields:seo:image',
@@ -50,7 +53,6 @@ const seoField = (options?: SeoFieldOptions): GroupField => {
 
   return {
     interfaceName: 'SeoField',
-    localized: true,
     name: 'seo',
     label: ({ t }) =>
       (t as TFunction<RiveoUtilsTranslationKeys>)(
