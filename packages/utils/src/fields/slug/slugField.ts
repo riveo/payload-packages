@@ -25,7 +25,6 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
       (t as TFunction<RiveoUtilsTranslationKeys>)(
         'riveo:utils:fields:slug:label',
       ),
-    localized: true,
     fields: [
       {
         admin: {
@@ -36,6 +35,7 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
         unique: true,
         index: true,
         required: true,
+        localized: true,
         hooks: {
           beforeValidate: [formatSlugHook(options?.generateFrom)],
         },
@@ -51,6 +51,7 @@ const slugField = (options?: SlugFieldOptions): GroupField => {
         required: false,
         name: 'auto',
         defaultValue: true,
+        localized: true,
         admin: {
           disableListColumn: true,
           disableListFilter: true,

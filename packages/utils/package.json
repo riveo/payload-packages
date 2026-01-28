@@ -1,6 +1,6 @@
 {
   "name": "@riveo/payload-utils",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Payload Utils reused across projects",
   "license": "MIT",
   "type": "module",
