@@ -1,25 +1,22 @@
-import { eslintConfigNext } from '../../eslint.config.mjs';
+import { configs } from '@riveo/eslint-config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
-const config = [
-  {
-    ignores: ['.next', 'dist', 'var'],
-  },
+export default defineConfig(
+  globalIgnores(['.next/', 'dist/', 'var/']),
   {
     languageOptions: {
       parserOptions: {
         projectService: {
           allowDefaultProject: ['*.config.mjs'],
         },
-        tsconfigRootDir: import.meta.dirname,
       },
     },
   },
-  ...eslintConfigNext,
+  configs.recommended,
+  configs.nextjs,
   {
     rules: {
       '@next/next/no-html-link-for-pages': 0,
     },
   },
-];
-
-export default config;
+);

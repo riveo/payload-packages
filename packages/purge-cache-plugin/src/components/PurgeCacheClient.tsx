@@ -64,7 +64,7 @@ const PurgeCacheClient = ({ purgers }: PurgeCacheButtonProps) => {
             return purger.action();
           }
 
-          return undefined;
+          return Promise.resolve(undefined);
         }),
       );
 

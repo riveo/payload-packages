@@ -1,7 +1,7 @@
 import type { TFunction } from '@payloadcms/translations';
 import type { CollectionSlug, GroupField } from 'payload';
-import type { RiveoUtilsTranslationKeys } from '../translations/index.js';
 import type { FieldOptions } from './types.js';
+import type { RiveoUtilsTranslationKeys } from '../translations/index.js';
 
 type SeoFieldOptions = FieldOptions<GroupField> & {
   /**

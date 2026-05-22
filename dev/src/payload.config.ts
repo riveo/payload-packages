@@ -8,10 +8,10 @@ import purgeCachePlugin, {
 import riveoUtilsPlugin, { groupContentTypes } from '@riveo/payload-utils';
 import { buildConfig, type CollectionConfig } from 'payload';
 import sharp from 'sharp';
+import { Pages } from '@/collections/Pages';
 import { migrations } from '../migrations';
 import { Media } from './collections/Media';
 import { Users } from './collections/Users';
-import { Pages } from '@/collections/Pages';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);

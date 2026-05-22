@@ -1,21 +1,27 @@
-// @ts-check
-import { eslintConfigNext } from '../eslint.config.mjs';
+import { configs } from '@riveo/eslint-config';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import globals from 'globals';
 
-const config = [
-  {
-    ignores: ['.next', 'var/*', 'src/app/(payload)/*', 'src/payload-types.ts'],
-  },
+export default defineConfig(
+  globalIgnores([
+    '.next/',
+    'dist/',
+    'var/',
+    'src/app/(payload)/*',
+    'src/payload-types.ts',
+  ]),
   {
     languageOptions: {
+      globals: { ...globals.node },
       parserOptions: {
         projectService: {
           allowDefaultProject: ['*.config.mjs'],
         },
-        tsconfigRootDir: import.meta.dirname,
       },
     },
   },
-  ...eslintConfigNext,
+  configs.recommended,
+  configs.nextjs,
   {
     files: ['./migrations/*.ts'],
     rules: {
@@ -31,6 +37,4 @@ const config = [
       '@typescript-eslint/consistent-type-imports': 0,
     },
   },
-];
-
-export default config;
+);
