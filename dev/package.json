@@ -19,29 +19,29 @@
     "start": "next start"
   },
   "dependencies": {
-    "@payloadcms/db-sqlite": "^3.43.0",
-    "@payloadcms/next": "^3.43.0",
-    "@payloadcms/richtext-lexical": "^3.43.0",
-    "@payloadcms/ui": "^3.43.0",
+    "@payloadcms/db-sqlite": "^3.84.1",
+    "@payloadcms/next": "^3.84.1",
+    "@payloadcms/richtext-lexical": "^3.84.1",
+    "@payloadcms/ui": "^3.84.1",
     "@riveo/payload-purge-cache-plugin": "workspace:*",
     "@riveo/payload-utils": "workspace:*",
-    "graphql": "^16.11.0",
-    "next": "^15.3.4",
-    "payload": "^3.43.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "sharp": "^0.34.2"
+    "graphql": "^16.14.0",
+    "next": "^16.2.2",
+    "payload": "^3.84.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^15.4.1",
+    "@next/bundle-analyzer": "^15.5.18",
     "@riveo/eslint-config": "^0.2.2",
-    "@types/node": "^22.15.32",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "eslint": "^9.29.0",
+    "@types/node": "^22.19.19",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
     "globals": "^17.6.0",
-    "prettier": "^3.5.3",
-    "typescript": "^5.8.3"
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3"
   },
   "engines": {
     "node": "^22.11"
