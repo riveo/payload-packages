@@ -2,13 +2,13 @@ import type { AdminViewServerProps } from 'payload';
 import type { PurgeCachePluginServerProps } from '../types.js';
 import NavLink from './NavLink.js';
 
-type NavLinkProps = AdminViewServerProps & PurgeCachePluginServerProps;
+type ToolsMenuProps = AdminViewServerProps & PurgeCachePluginServerProps;
 
-const AfterNavLinks = async ({
+const ToolsMenu = async ({
   purgeCachePlugin,
   payload,
   user,
-}: NavLinkProps) => {
+}: ToolsMenuProps) => {
   if (!user) {
     return null;
   }
@@ -19,13 +19,7 @@ const AfterNavLinks = async ({
 
   const href = `${payload.getAdminURL()}${purgeCachePlugin.path}`;
 
-  return (
-    <div className="nav-group">
-      <div className="nav-group__content">
-        <NavLink href={href} />
-      </div>
-    </div>
-  );
+  return <NavLink href={href} />;
 };
 
-export default AfterNavLinks;
+export default ToolsMenu;

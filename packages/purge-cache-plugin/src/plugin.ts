@@ -16,7 +16,8 @@ const purgeCachePlugin = (pluginConfig: PurgeCachePluginConfig): Plugin => {
       return incomingConfig;
     }
 
-    const path = (pluginConfig?.path ?? DEFAULT_PATH).replace(/^\/{2,}/, '/');
+    const path: `/${string}` = `/${(pluginConfig?.path ?? DEFAULT_PATH).replace(/^\//g, '')}`;
+
     const serverProps: PurgeCachePluginServerProps = {
       purgeCachePlugin: {
         purgers: pluginConfig.purgers,
@@ -31,10 +32,10 @@ const purgeCachePlugin = (pluginConfig: PurgeCachePluginConfig): Plugin => {
         ...incomingConfig.admin,
         components: {
           ...(incomingConfig.admin?.components ?? {}),
-          afterNavLinks: [
-            ...(incomingConfig.admin?.components?.afterNavLinks ?? []),
+          settingsMenu: [
+            ...(incomingConfig.admin?.components?.settingsMenu ?? []),
             {
-              path: '@riveo/payload-purge-cache-plugin/components#AfterNavLinks',
+              path: '@riveo/payload-purge-cache-plugin/components#ToolsMenu',
               serverProps,
             },
           ],

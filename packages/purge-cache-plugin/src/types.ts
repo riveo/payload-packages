@@ -64,7 +64,7 @@ export type Purger = {
 export type PurgeCachePluginServerProps = {
   purgeCachePlugin: {
     purgers: Purger[];
-    path: string;
+    path: `/${string}`;
     access?: AccessCallback;
   };
 };
