@@ -1,46 +1,54 @@
-import type { Plugin } from 'payload';
+import { definePlugin } from 'payload';
 import type {
   PurgeCachePluginConfig,
   PurgeCachePluginServerProps,
 } from './types.js';
 
 const DEFAULT_PATH = '/riveo-purge-cache';
+const PLUGIN_SLUG = 'riveo-purge-cache';
 
-const purgeCachePlugin = (pluginConfig: PurgeCachePluginConfig): Plugin => {
-  return (incomingConfig) => {
+declare module 'payload' {
+  interface RegisteredPlugins {
+    [PLUGIN_SLUG]: PurgeCachePluginConfig;
+  }
+}
+
+const purgeCachePlugin = definePlugin<PurgeCachePluginConfig>({
+  slug: PLUGIN_SLUG,
+  plugin: ({ plugins, config, ...pluginConfig }) => {
     if (
       pluginConfig?.enabled === false ||
       pluginConfig.purgers.length === 0 ||
-      !incomingConfig.admin
+      !config.admin
     ) {
-      return incomingConfig;
+      return config;
     }
 
     const path: `/${string}` = `/${(pluginConfig?.path ?? DEFAULT_PATH).replace(/^\//g, '')}`;
 
     const serverProps: PurgeCachePluginServerProps = {
       purgeCachePlugin: {
-        purgers: pluginConfig.purgers,
+        purgers: [], // pluginConfig.purgers,
         path,
         access: pluginConfig.access,
       },
     };
 
     return {
-      ...incomingConfig,
+      ...config,
       admin: {
-        ...incomingConfig.admin,
+        ...config.admin,
         components: {
-          ...(incomingConfig.admin?.components ?? {}),
+          ...(config.admin?.components ?? {}),
           settingsMenu: [
-            ...(incomingConfig.admin?.components?.settingsMenu ?? []),
+            ...(config.admin?.components?.settingsMenu ?? []),
             {
               path: '@riveo/payload-purge-cache-plugin/components#ToolsMenu',
               serverProps,
             },
           ],
           views: {
-            ...(incomingConfig.admin?.components?.views ?? {}),
+            ...(config.admin?.components?.views ?? {}),
             riveoPurgeCache: {
               Component: {
                 path: '@riveo/payload-purge-cache-plugin/components#PurgeCache',
@@ -53,7 +61,7 @@ const purgeCachePlugin = (pluginConfig: PurgeCachePluginConfig): Plugin => {
         },
       },
     };
-  };
-};
+  },
+});
 
 export default purgeCachePlugin;
