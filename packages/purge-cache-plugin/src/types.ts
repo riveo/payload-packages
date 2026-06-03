@@ -20,23 +20,30 @@ export type PurgeCachePluginConfig = {
    */
   path?: string;
   /**
+   * The API route path to trigger purges.
+   * Defaults to the value of `path` option if not provided.
+   */
+  apiPath?: string;
+  /**
    * Optional access control callback to restrict plugin access in the admin panel.
    */
   access?: AccessCallback;
   /**
    * List of purger objects that will be executed when the purge action is triggered.
    */
-  purgers: Purger[];
+  purgers: Record<string, Purger>;
 };
+
+export type PurgerResult =
+  | { success: true }
+  | { success: false; error: string };
 
 /**
  * Function that executes a purge action.
  *
  * @returns A promise resolving to an object that may contain an error.
  */
-export type PurgerAction = () => Promise<{
-  error?: string;
-}>;
+export type PurgerAction = () => Promise<PurgerResult>;
 
 /**
  * Represents a single cache purging strategy or destination.
@@ -63,8 +70,9 @@ export type Purger = {
 
 export type PurgeCachePluginServerProps = {
   purgeCachePlugin: {
-    purgers: Purger[];
+    purgers: Record<string, Purger>;
     path: `/${string}`;
+    apiPath: `/${string}`;
     access?: AccessCallback;
   };
 };

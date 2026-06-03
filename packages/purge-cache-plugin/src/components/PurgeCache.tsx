@@ -3,9 +3,8 @@ import { Gutter, RenderTitle } from '@payloadcms/ui';
 import { notFound, redirect } from 'next/navigation.js';
 import type { AdminViewServerProps } from 'payload';
 import type { PurgeCachePluginServerProps } from '../types.js';
-import PurgeCacheClient from './PurgeCacheClient.js';
-
 import './styles.scss';
+import PurgeCacheClient from './PurgeCacheClient.js';
 
 type CloudflareProps = AdminViewServerProps & PurgeCachePluginServerProps;
 
@@ -16,9 +15,9 @@ const PurgeCache = async ({
   params,
   searchParams,
 }: CloudflareProps) => {
-  if (!initPageResult.req?.user) {
+  if (!initPageResult?.req?.user) {
     return redirect(
-      `${payload.getAdminURL()}/login?redirect=${payload.getAdminURL()}${purgeCachePlugin.path}`,
+      `${payload.getAdminURL()}/login?redirect=${payload.getAdminURL()}${purgeCachePlugin?.path}`,
     );
   }
 
@@ -43,7 +42,19 @@ const PurgeCache = async ({
     >
       <Gutter>
         <RenderTitle title="Purge Cache" />
-        <PurgeCacheClient purgers={purgeCachePlugin.purgers} />
+        <PurgeCacheClient
+          purgers={Object.fromEntries(
+            Object.entries(purgeCachePlugin.purgers).map(
+              ([purger, purgerConfig]) => {
+                return [
+                  purger,
+                  { label: purgerConfig.label, default: purgerConfig.default },
+                ];
+              },
+            ),
+          )}
+          apiPath={purgeCachePlugin.apiPath}
+        />
       </Gutter>
     </DefaultTemplate>
   );

@@ -1,4 +1,5 @@
 import { definePlugin } from 'payload';
+import { createApiHandler } from './api-handler.js';
 import type {
   PurgeCachePluginConfig,
   PurgeCachePluginServerProps,
@@ -13,29 +14,38 @@ declare module 'payload' {
   }
 }
 
+const normalizePath = (path: string): `/${string}` =>
+  `/${path.replace(/^\//g, '')}`;
+
 const purgeCachePlugin = definePlugin<PurgeCachePluginConfig>({
   slug: PLUGIN_SLUG,
   plugin: ({ plugins, config, ...pluginConfig }) => {
-    if (
-      pluginConfig?.enabled === false ||
-      pluginConfig.purgers.length === 0 ||
-      !config.admin
-    ) {
+    if (pluginConfig?.enabled === false || !config.admin) {
       return config;
     }
 
-    const path: `/${string}` = `/${(pluginConfig?.path ?? DEFAULT_PATH).replace(/^\//g, '')}`;
+    const path = normalizePath(pluginConfig?.path ?? DEFAULT_PATH);
+    const apiPath = normalizePath(pluginConfig?.apiPath ?? path);
 
     const serverProps: PurgeCachePluginServerProps = {
       purgeCachePlugin: {
-        purgers: [], // pluginConfig.purgers,
+        purgers: pluginConfig.purgers,
         path,
+        apiPath,
         access: pluginConfig.access,
       },
     };
 
     return {
       ...config,
+      endpoints: [
+        ...(config.endpoints ?? []),
+        {
+          method: 'post',
+          path: apiPath,
+          handler: createApiHandler(pluginConfig),
+        },
+      ],
       admin: {
         ...config.admin,
         components: {

@@ -5,19 +5,20 @@ export const getHttpPurgerAction = (
   options?: RequestInit,
 ): PurgerAction => {
   return async () => {
-    'use server';
-
     try {
       const response = await fetch(endpoint, options);
 
       if (response.status >= 400) {
-        return { error: `${response.status} ${await response.text()}` };
+        return {
+          success: false,
+          error: `${response.status} ${await response.text()}`,
+        };
       }
 
-      return {};
+      return { success: true };
     } catch (e) {
       console.error(e);
-      return { error: '500' };
+      return { success: false, error: 'API call error.' };
     }
   };
 };

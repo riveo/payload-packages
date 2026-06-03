@@ -27,14 +27,14 @@ export const getCloudflarePurgerAction = (
   options: CloudflarePurgerFactoryOptions,
 ): PurgerAction => {
   return async () => {
-    'use server';
     if (!options.apiKey || !options.zoneId) {
       console.warn(
         'Cloudflare API token or zone ID is not set. Skipping cache purge.',
       );
 
       return {
-        error: 'Invalid configuration',
+        success: false,
+        error: 'Cloudflare API token or zone ID is not set.',
       };
     }
 
@@ -57,9 +57,11 @@ export const getCloudflarePurgerAction = (
     });
 
     if (!response.ok) {
-      return { error: await response.text() };
+      return { success: false, error: await response.text() };
     }
 
-    return {};
+    return {
+      success: true,
+    };
   };
 };

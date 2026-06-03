@@ -1,5 +1,5 @@
 import {
-  addLocalesToRequestFromData,
+  addDataAndFileToRequest,
   headersWithCors,
   type PayloadHandler,
 } from 'payload';
@@ -10,7 +10,9 @@ const requestSchema = z.object({
   purge: z.array(z.string()),
 });
 
-export const createHander: (
+export type PurgeCacheRequestData = z.infer<typeof requestSchema>;
+
+export const createApiHandler: (
   config: PurgeCachePluginConfig,
 ) => PayloadHandler = (config) => {
   return async (req) => {
@@ -19,7 +21,7 @@ export const createHander: (
       req,
     });
 
-    if (req.method !== 'post') {
+    if (req.method?.toUpperCase() !== 'POST') {
       return new Response('', {
         status: 405,
         headers,
@@ -38,18 +40,36 @@ export const createHander: (
       return Response.json({ error: 'forbidden' }, { status: 403, headers });
     }
 
-    addLocalesToRequestFromData(req);
-    const result = requestSchema.safeParse(req.data);
+    await addDataAndFileToRequest(req);
+    const parsedRequest = requestSchema.safeParse(req.data);
 
-    if (!result.success) {
+    if (!parsedRequest.success) {
       return Response.json(
         {
-          error: z.treeifyError(result.error),
+          error: z.treeifyError(parsedRequest.error),
         },
-        { status: 422 },
+        { status: 400 },
       );
     }
 
-    return Response.json(result.data);
+    const promises = parsedRequest.data.purge.map(async (purgerName) => {
+      const purger = config.purgers[purgerName];
+
+      if (!purger) {
+        return [
+          purgerName,
+          {
+            success: false,
+            error: 'Not found.',
+          },
+        ];
+      }
+
+      return [purgerName, await purger.action()];
+    });
+
+    const results = await Promise.all(promises);
+
+    return Response.json(Object.fromEntries(results));
   };
 };

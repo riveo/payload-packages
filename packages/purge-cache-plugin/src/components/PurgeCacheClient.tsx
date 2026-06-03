@@ -7,12 +7,15 @@ import {
   SuccessIcon,
   Button,
   CheckboxInput,
+  useConfig,
 } from '@payloadcms/ui';
 import { useState, useTransition } from 'react';
-import type { Purger } from '../types.js';
+import type { PurgeCacheRequestData } from '../api-handler.js';
+import type { Purger, PurgerResult } from '../types.js';
 
 type PurgeCacheButtonProps = {
-  purgers: Purger[];
+  purgers: Record<string, Pick<Purger, 'label' | 'default'>>;
+  apiPath: `/${string}`;
 };
 
 const PurgerStatus = ({
@@ -20,7 +23,7 @@ const PurgerStatus = ({
   result,
 }: {
   isLoading?: boolean;
-  result?: { error?: string };
+  result?: PurgerResult;
 }) => {
   if (isLoading) {
     return <MoreIcon />;
@@ -30,45 +33,62 @@ const PurgerStatus = ({
     return <LineIcon />;
   }
 
-  if (result?.error) {
+  if (!result.success) {
     return <ErrorIcon />;
   }
 
   return <SuccessIcon />;
 };
 
-const PurgeCacheClient = ({ purgers }: PurgeCacheButtonProps) => {
+const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
   const [isLoading, startTransition] = useTransition();
-  const [results, setResults] = useState<({ error?: string } | undefined)[]>(
-    [],
+  const [results, setResults] = useState<Record<string, PurgerResult>>({});
+
+  const {
+    config: {
+      routes: { api: apiRoute },
+    },
+  } = useConfig();
+
+  const [selectedPurgers, setSelectedPurgers] = useState<
+    Record<string, boolean>
+  >(
+    Object.fromEntries(
+      Object.entries(purgers).map(([key, value]) => {
+        return [key, value.default !== false];
+      }),
+    ),
   );
 
-  const [selectedPurgersIds, setSelectedPurgersIds] = useState(
-    purgers.map((purger) => purger.default !== false),
-  );
-
-  const togglePurger = (id: number) => {
-    setSelectedPurgersIds((previous) => {
+  const togglePurger = (id: string) => {
+    setSelectedPurgers((previous) => {
       return {
         ...previous,
-        [id]: !previous?.[id],
+        [id]: !previous[id],
       };
     });
   };
 
   const purgeCache = () => {
     startTransition(async () => {
-      const results = await Promise.all(
-        purgers.map((purger, i) => {
-          if (selectedPurgersIds[i]) {
-            return purger.action();
-          }
+      const purgersToExecute = [];
+      for (const purger of Object.keys(selectedPurgers)) {
+        if (selectedPurgers[purger]) {
+          purgersToExecute.push(purger);
+        }
+      }
 
-          return Promise.resolve(undefined);
-        }),
-      );
+      const res = await fetch(`${apiRoute}${apiPath}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          purge: purgersToExecute,
+        } satisfies PurgeCacheRequestData),
+      });
 
-      setResults(results);
+      setResults((await res.json()) as Record<string, PurgerResult>);
     });
   };
 
@@ -76,33 +96,32 @@ const PurgeCacheClient = ({ purgers }: PurgeCacheButtonProps) => {
     <div className="riveo-purge-cache-plugin-container">
       <div className="riveo-purge-cache-plugin-container__purgers">
         <ul>
-          {purgers.map(({ label }, i) => (
-            <li key={i}>
+          {Object.entries(purgers).map(([key, { label }]) => (
+            <li key={key}>
               <div>
                 <CheckboxInput
-                  onToggle={() => togglePurger(i)}
-                  checked={selectedPurgersIds[i]}
+                  onToggle={() => togglePurger(key)}
+                  checked={selectedPurgers[key]}
                   label={label}
-                  id={`riveo-cache-purger-${i}`}
+                  id={`riveo-cache-purger-${key}`}
                 />
 
                 <div className="purger-status-container">
                   <PurgerStatus
-                    isLoading={selectedPurgersIds[i] && isLoading}
-                    result={results?.[i]}
+                    isLoading={selectedPurgers[key] && isLoading}
+                    result={results?.[key]}
                   />
                 </div>
               </div>
-              {results?.[i]?.error && (
+              {results[key]?.success === false && (
                 <pre className="purger-error">
-                  {JSON.stringify(results[i].error)}
+                  {results[key]?.error ?? 'Unknown error'}
                 </pre>
               )}
             </li>
           ))}
         </ul>
       </div>
-
       <div className="riveo-purge-cache-plugin-container__button-row">
         <Button onClick={() => purgeCache()} disabled={isLoading}>
           Purge selected caches
