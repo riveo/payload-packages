@@ -43,6 +43,7 @@ const PurgerStatus = ({
 const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
   const [isLoading, startTransition] = useTransition();
   const [results, setResults] = useState<Record<string, PurgerResult>>({});
+  const [error, setError] = useState<string>();
 
   const {
     config: {
@@ -88,7 +89,14 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
         } satisfies PurgeCacheRequestData),
       });
 
-      setResults((await res.json()) as Record<string, PurgerResult>);
+      if (res.ok) {
+        setError(undefined);
+        setResults((await res.json()) as Record<string, PurgerResult>);
+        return;
+      }
+
+      setResults({});
+      setError(`Could not purge cache (HTTP ${res.status}).`);
     });
   };
 
@@ -127,6 +135,9 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
           Purge selected caches
         </Button>
       </div>
+      {error && (
+        <pre className="purger-error">General purge cache error occurred.</pre>
+      )}
     </div>
   );
 };
