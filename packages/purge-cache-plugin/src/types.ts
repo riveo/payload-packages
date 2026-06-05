@@ -7,7 +7,9 @@ import type { User } from 'payload';
  * @param args - Object containing the current authenticated user.
  * @returns A boolean or a promise that resolves to a boolean indicating access permission.
  */
-type AccessCallback = (args: { user?: User }) => boolean | Promise<boolean>;
+export type AccessCallback = (args: {
+  user?: User;
+}) => boolean | Promise<boolean>;
 
 export type PurgeCachePluginConfig = {
   /**
@@ -45,20 +47,11 @@ export type PurgerResult =
  */
 export type PurgerAction = () => Promise<PurgerResult>;
 
-/**
- * Represents a single cache purging strategy or destination.
- */
-export type Purger = {
+export type PurgerMeta = {
   /**
    * Human-readable label for the purger (used in UI and logs).
    */
   label: string;
-
-  /**
-   * Function that performs the purge and returns status or error.
-   * It has to be a server action.
-   */
-  action: PurgerAction;
 
   /**
    * Option to deselect purger on purgers list by default (defaults to true)
@@ -68,9 +61,20 @@ export type Purger = {
   default?: boolean;
 };
 
+/**
+ * Represents a single cache purging strategy or destination.
+ */
+export type Purger = PurgerMeta & {
+  /**
+   * Function that performs the purge and returns status or error.
+   * It has to be a server action.
+   */
+  action: PurgerAction;
+};
+
 export type PurgeCachePluginServerProps = {
   purgeCachePlugin: {
-    purgers: Record<string, Purger>;
+    purgers: Record<string, Omit<Purger, 'action'> & { action: never }>;
     path: `/${string}`;
     apiPath: `/${string}`;
     access?: AccessCallback;

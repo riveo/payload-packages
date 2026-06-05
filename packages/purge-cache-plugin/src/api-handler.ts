@@ -4,6 +4,7 @@ import {
   type PayloadHandler,
 } from 'payload';
 import { z } from 'zod';
+import { canAccessPurgeCache } from './access.js';
 import type { PurgeCachePluginConfig } from './types.js';
 
 const requestSchema = z.object({
@@ -28,15 +29,9 @@ export const createApiHandler: (
       });
     }
 
-    if (!req?.user) {
-      return Response.json({ error: 'forbidden' }, { status: 403, headers });
-    }
-
-    const allowAccess = config.access
-      ? !(await config.access({ user: req.user }))
-      : true;
-
-    if (!allowAccess) {
+    if (
+      !(await canAccessPurgeCache({ user: req.user, access: config.access }))
+    ) {
       return Response.json({ error: 'forbidden' }, { status: 403, headers });
     }
 
@@ -65,7 +60,12 @@ export const createApiHandler: (
         ];
       }
 
-      return [purgerName, await purger.action()];
+      try {
+        return [purgerName, await purger.action()];
+      } catch (err) {
+        console.error(err);
+        return [purgerName, { success: false, error: 'Unknown error.' }];
+      }
     });
 
     const results = await Promise.all(promises);

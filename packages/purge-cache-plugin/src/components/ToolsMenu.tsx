@@ -1,6 +1,7 @@
 import type { AdminViewServerProps } from 'payload';
 import type { PurgeCachePluginServerProps } from '../types.js';
 import NavLink from './NavLink.js';
+import { canAccessPurgeCache } from '../access.js';
 
 type ToolsMenuProps = AdminViewServerProps & PurgeCachePluginServerProps;
 
@@ -9,11 +10,7 @@ const ToolsMenu = async ({
   payload,
   user,
 }: ToolsMenuProps) => {
-  if (!user) {
-    return null;
-  }
-
-  if (purgeCachePlugin.access && !(await purgeCachePlugin.access({ user }))) {
+  if (!(await canAccessPurgeCache({ user, access: purgeCachePlugin.access }))) {
     return null;
   }
 
