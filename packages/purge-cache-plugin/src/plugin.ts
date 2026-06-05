@@ -27,9 +27,16 @@ const purgeCachePlugin = definePlugin<PurgeCachePluginConfig>({
     const path = normalizePath(pluginConfig?.path ?? DEFAULT_PATH);
     const apiPath = normalizePath(pluginConfig?.apiPath ?? path);
 
+    const purgers = Object.fromEntries(
+      Object.entries(pluginConfig.purgers).map(([name, purger]) => {
+        const { action, ...purgerMeta } = purger;
+        return [name, purgerMeta];
+      }),
+    );
+
     const serverProps: PurgeCachePluginServerProps = {
       purgeCachePlugin: {
-        purgers: pluginConfig.purgers,
+        purgers,
         path,
         apiPath,
         access: pluginConfig.access,

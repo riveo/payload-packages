@@ -45,16 +45,7 @@ const PurgeCache = async ({
       <Gutter>
         <RenderTitle title="Purge Cache" />
         <PurgeCacheClient
-          purgers={Object.fromEntries(
-            Object.entries(purgeCachePlugin.purgers).map(
-              ([purger, purgerConfig]) => {
-                return [
-                  purger,
-                  { label: purgerConfig.label, default: purgerConfig.default },
-                ];
-              },
-            ),
-          )}
+          purgers={purgeCachePlugin.purgers}
           apiPath={purgeCachePlugin.apiPath}
         />
       </Gutter>

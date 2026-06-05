@@ -11,10 +11,10 @@ import {
 } from '@payloadcms/ui';
 import { useState, useTransition } from 'react';
 import type { PurgeCacheRequestData } from '../api-handler.js';
-import type { Purger, PurgerResult } from '../types.js';
+import type { PurgerMeta, PurgerResult } from '../types.js';
 
 type PurgeCacheButtonProps = {
-  purgers: Record<string, Pick<Purger, 'label' | 'default'>>;
+  purgers: Record<string, PurgerMeta>;
   apiPath: `/${string}`;
 };
 

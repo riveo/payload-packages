@@ -74,7 +74,7 @@ export type Purger = PurgerMeta & {
 
 export type PurgeCachePluginServerProps = {
   purgeCachePlugin: {
-    purgers: Record<string, Omit<Purger, 'action'> & { action: never }>;
+    purgers: Record<string, PurgerMeta>;
     path: `/${string}`;
     apiPath: `/${string}`;
     access?: AccessCallback;
