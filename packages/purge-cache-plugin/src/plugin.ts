@@ -29,8 +29,13 @@ const purgeCachePlugin = definePlugin<PurgeCachePluginConfig>({
 
     const purgers = Object.fromEntries(
       Object.entries(pluginConfig.purgers).map(([name, purger]) => {
-        const { action, ...purgerMeta } = purger;
-        return [name, purgerMeta];
+        return [
+          name,
+          {
+            label: purger.label,
+            default: purger.default,
+          },
+        ];
       }),
     );
 
