@@ -1,5 +1,5 @@
 import { definePlugin } from 'payload';
-import { createApiHandler } from './api-handler.js';
+import { createApiHandler } from './api/purge-api-handler.js';
 import type {
   PurgeCachePluginConfig,
   PurgeCachePluginServerProps,

@@ -13,7 +13,7 @@ import { useState, useTransition } from 'react';
 import type {
   PurgeCacheRequestData,
   PurgeCacheResponse,
-} from '../request-schema.js';
+} from '../api/purge-api-handler.js';
 import type { PurgerMeta, PurgerResult } from '../types.js';
 
 type PurgeCacheButtonProps = {
