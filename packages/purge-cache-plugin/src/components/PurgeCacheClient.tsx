@@ -10,7 +10,10 @@ import {
   useConfig,
 } from '@payloadcms/ui';
 import { useState, useTransition } from 'react';
-import type { PurgeCacheRequestData } from '../api-handler.js';
+import type {
+  PurgeCacheRequestData,
+  PurgeCacheResponse,
+} from '../request-schema.js';
 import type { PurgerMeta, PurgerResult } from '../types.js';
 
 type PurgeCacheButtonProps = {
@@ -90,8 +93,11 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
       });
 
       if (res.ok) {
+        const data = (await res.json()) as PurgeCacheResponse;
+
         setError(undefined);
-        setResults((await res.json()) as Record<string, PurgerResult>);
+        setResults(data.results);
+
         return;
       }
 

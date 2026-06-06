@@ -2,74 +2,87 @@ import {
   addDataAndFileToRequest,
   headersWithCors,
   type PayloadHandler,
+  type PayloadRequest,
 } from 'payload';
-import { z } from 'zod';
 import { canAccessPurgeCache } from './access.js';
-import type { PurgeCachePluginConfig } from './types.js';
+import {
+  type PurgeCacheErrorResponse,
+  purgeCacheRequestSchema,
+  type PurgeCacheResponse,
+} from './request-schema.js';
+import type { PurgeCachePluginConfig, PurgerResult } from './types.js';
 
-const requestSchema = z.object({
-  purge: z.array(z.string()),
-});
+const response = (
+  req: PayloadRequest,
+  body: PurgeCacheErrorResponse | PurgeCacheResponse,
+  init?: ResponseInit,
+): Response => {
+  const headers = headersWithCors({
+    headers: new Headers(init?.headers),
+    req,
+  });
 
-export type PurgeCacheRequestData = z.infer<typeof requestSchema>;
+  return Response.json(body, {
+    ...(init ?? {}),
+    headers,
+  });
+};
 
 export const createApiHandler: (
   config: PurgeCachePluginConfig,
 ) => PayloadHandler = (config) => {
   return async (req) => {
-    const headers = headersWithCors({
-      headers: new Headers(),
-      req,
-    });
-
     if (req.method?.toUpperCase() !== 'POST') {
-      return new Response('', {
-        status: 405,
-        headers,
-      });
+      return response(req, { error: 'Invalid method' }, { status: 405 });
     }
 
     if (
       !(await canAccessPurgeCache({ user: req.user, access: config.access }))
     ) {
-      return Response.json({ error: 'forbidden' }, { status: 403, headers });
+      return response(req, { error: 'Forbidden' }, { status: 403 });
     }
 
     await addDataAndFileToRequest(req);
-    const parsedRequest = requestSchema.safeParse(req.data);
+    const parsedRequest = purgeCacheRequestSchema.safeParse(req.data);
 
     if (!parsedRequest.success) {
-      return Response.json(
+      return response(
+        req,
         {
-          error: z.treeifyError(parsedRequest.error),
+          error: 'Validation error',
+          violations: parsedRequest.error.issues,
         },
-        { status: 400 },
+        { status: 422 },
       );
     }
 
-    const promises = parsedRequest.data.purge.map(async (purgerName) => {
-      const purger = config.purgers[purgerName];
+    const promises = parsedRequest.data.purge.map(
+      async (purgerName): Promise<[string, PurgerResult]> => {
+        const purger = config.purgers[purgerName];
 
-      if (!purger) {
-        return [
-          purgerName,
-          {
-            success: false,
-            error: 'Not found.',
-          },
-        ];
-      }
+        if (!purger) {
+          return [
+            purgerName,
+            {
+              success: false,
+              error: 'Not found',
+            },
+          ];
+        }
 
-      try {
-        return [purgerName, await purger.action()];
-      } catch (err) {
-        console.error(err);
-        return [purgerName, { success: false, error: 'Unknown error.' }];
-      }
-    });
+        try {
+          return [purgerName, await purger.action()];
+        } catch (err) {
+          console.error(err);
+          return [purgerName, { success: false, error: 'Unknown error.' }];
+        }
+      },
+    );
 
     const results = await Promise.all(promises);
 
-    return Response.json(Object.fromEntries(results));
+    return response(req, {
+      results: Object.fromEntries(results),
+    });
   };
 };
