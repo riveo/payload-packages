@@ -82,6 +82,9 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
         }
       }
 
+      setError(undefined);
+      setResults({});
+
       const res = await fetch(`${apiRoute}${apiPath}`, {
         method: 'POST',
         headers: {
@@ -95,14 +98,17 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
       if (res.ok) {
         const data = (await res.json()) as PurgeCacheResponse;
 
-        setError(undefined);
         setResults(data.results);
-
         return;
       }
 
-      setResults({});
-      setError(`Could not purge cache (HTTP ${res.status}).`);
+      switch (res.status) {
+        case 403:
+          setError('You do not have permission to purge cache.');
+          break;
+        default:
+          setError('Could not purge cache.');
+      }
     });
   };
 
@@ -141,9 +147,7 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
           Purge selected caches
         </Button>
       </div>
-      {error && (
-        <pre className="purger-error">General purge cache error occurred.</pre>
-      )}
+      {error && <pre className="purger-error">{error}</pre>}
     </div>
   );
 };
