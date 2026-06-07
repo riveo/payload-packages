@@ -75,7 +75,7 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
 
   const purgeCache = () => {
     startTransition(async () => {
-      const purgersToExecute = [];
+      const purgersToExecute: string[] = [];
       for (const purger of Object.keys(selectedPurgers)) {
         if (selectedPurgers[purger]) {
           purgersToExecute.push(purger);
