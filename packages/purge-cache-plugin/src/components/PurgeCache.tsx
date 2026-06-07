@@ -7,7 +7,7 @@ import './styles.scss';
 import PurgeCacheClient from './PurgeCacheClient.js';
 import { canAccessPurgeCache } from '../access.js';
 
-type CloudflareProps = AdminViewServerProps & PurgeCachePluginServerProps;
+type PurgeCacheProps = AdminViewServerProps & PurgeCachePluginServerProps;
 
 const PurgeCache = async ({
   initPageResult,
@@ -15,7 +15,7 @@ const PurgeCache = async ({
   payload,
   params,
   searchParams,
-}: CloudflareProps) => {
+}: PurgeCacheProps) => {
   if (
     !(await canAccessPurgeCache({
       user: initPageResult?.req?.user,
