@@ -127,6 +127,7 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
                   onToggle={() => togglePurger(key)}
                   checked={selectedPurgers[key]}
                   label={label}
+                  readOnly={isLoading}
                   id={`riveo-cache-purger-${key}`}
                 />
 
