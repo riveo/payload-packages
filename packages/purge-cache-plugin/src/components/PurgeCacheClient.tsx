@@ -140,7 +140,7 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
               </div>
               {results[key]?.success === false && (
                 <pre className="purger-error">
-                  {results[key]?.error ?? 'Unknown error'}
+                  {results[key]?.error ?? 'Purge failed.'}
                 </pre>
               )}
             </li>

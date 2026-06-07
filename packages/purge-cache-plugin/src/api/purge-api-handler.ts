@@ -44,13 +44,13 @@ export const createApiHandler: (
 ) => PayloadHandler = (config) => {
   return async (req) => {
     if (req.method?.toUpperCase() !== 'POST') {
-      return response(req, { error: 'Invalid method' }, { status: 405 });
+      return response(req, { error: 'Method not allowed.' }, { status: 405 });
     }
 
     if (
       !(await canAccessPurgeCache({ user: req.user, access: config.access }))
     ) {
-      return response(req, { error: 'Forbidden' }, { status: 403 });
+      return response(req, { error: 'Forbidden.' }, { status: 403 });
     }
 
     await addDataAndFileToRequest(req);
@@ -60,7 +60,7 @@ export const createApiHandler: (
       return response(
         req,
         {
-          error: 'Validation error',
+          error: 'Invalid request.',
           violations: parsedRequest.error.issues,
         },
         { status: 422 },
@@ -76,7 +76,7 @@ export const createApiHandler: (
             purgerName,
             {
               success: false,
-              error: 'Not found',
+              error: 'Purger not found.',
             },
           ];
         }
@@ -85,7 +85,7 @@ export const createApiHandler: (
           return [purgerName, await purger.action()];
         } catch (err) {
           console.error(err);
-          return [purgerName, { success: false, error: 'Unknown error.' }];
+          return [purgerName, { success: false, error: 'Purge failed.' }];
         }
       },
     );
