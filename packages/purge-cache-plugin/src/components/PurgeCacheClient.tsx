@@ -85,6 +85,10 @@ const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
       setError(undefined);
       setResults({});
 
+      if (purgersToExecute.length === 0) {
+        return;
+      }
+
       const res = await fetch(`${apiRoute}${apiPath}`, {
         method: 'POST',
         headers: {
