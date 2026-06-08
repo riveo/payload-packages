@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+Nothing here.
+
+## 0.2.0
+
+A rework of the plugin's architecture and API.
+
 ### Added
 
 - A dedicated API endpoint for triggering cache purges from the admin UI.
