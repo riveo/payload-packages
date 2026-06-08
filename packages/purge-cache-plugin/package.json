@@ -1,6 +1,6 @@
 {
   "name": "@riveo/payload-purge-cache-plugin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Payload Purge Cache Plugin",
   "license": "MIT",
   "type": "module",
@@ -35,8 +35,8 @@
     "check:lint": "eslint .",
     "check:format": "prettier --check .",
     "format": "prettier . --write",
-    "clean": "rimraf dist",
-    "prepublishOnly": "npm run clean && npm run build"
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "prepublishOnly": "pnpm run check && pnpm run clean && pnpm run build"
   },
   "author": "Piotr Rzeczkowski <pr@riveolabs.com> (https://notesofdev.com/)",
   "homepage": "https://github.com/riveo/payload-packages",
