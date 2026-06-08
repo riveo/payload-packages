@@ -7,3 +7,4 @@
 /src/app/(payload)/*
 /src/payload-types.ts
 /tsconfig.tsbuildinfo
+/migrations
