@@ -1,6 +1,6 @@
 {
   "name": "@riveo/payload-purge-cache-plugin",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Payload Purge Cache Plugin",
   "license": "MIT",
   "type": "module",
