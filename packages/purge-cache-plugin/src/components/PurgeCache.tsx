@@ -1,5 +1,5 @@
 import { DefaultTemplate } from '@payloadcms/next/templates';
-import { Gutter, RenderTitle } from '@payloadcms/ui';
+import { Gutter, RenderTitle, SetStepNav } from '@payloadcms/ui';
 import { notFound, redirect } from 'next/navigation.js';
 import type { AdminViewServerProps } from 'payload';
 import type { PurgeCachePluginServerProps } from '../types.js';
@@ -42,6 +42,7 @@ const PurgeCache = async ({
       user={initPageResult?.req.user ?? undefined}
       visibleEntities={initPageResult.visibleEntities}
     >
+      <SetStepNav nav={[{ label: 'Purge Cache' }]} />
       <Gutter>
         <RenderTitle title="Purge Cache" />
         <PurgeCacheClient
