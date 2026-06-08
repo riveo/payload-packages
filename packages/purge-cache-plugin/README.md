@@ -1,38 +1,38 @@
 # Payload Purge Cache plugin
 
-A plugin for [PayloadCMS](https://payloadcms.com/) that integrates cache purging functionalities directly into the admin panel, allowing administrators to efficiently manage and clear cached content across various platforms.
-
----
+A plugin for [PayloadCMS](https://payloadcms.com/) that adds a dedicated cache purge page to the Payload admin and runs selected purgers concurrently.
 
 ## Features
 
-- 🧹 **One-click cache purge** from the admin panel
-- 🔧 **Pluggable purgers**, with built-in support for Cloudflare, Next.js and raw HTTP request
-- 🔐 Optional **access control**
-- ✅ **Status feedback** for every purge attempt
+- Run selected purgers from the Payload admin UI
+- Execute all selected purgers concurrently and collect per-purger results
+- Restrict access with a single access callback shared by UI and API
+- Use built-in purgers for Cloudflare, Next.js path revalidation, and generic HTTP endpoints
+- Define your own purgers with a simple `run()` contract
 
 ## Installation
 
-```shell
+```sh
 npm install @riveo/payload-purge-cache-plugin
 ```
 
-Then register it in your payload.config.ts:
+## Basic usage
 
-```typescript
-import purgeCachePlugin from '@riveo/payload-purge-cache-plugin';
-import { getNextjsPurgerAction } from '@riveo/payload-purge-cache-plugin/purgers';
+```ts
+import { buildConfig } from 'payload';
+import purgeCachePlugin, {
+  createNextJsPathPurger,
+} from '@riveo/payload-purge-cache-plugin';
 
-export const config = buildConfig({
+export default buildConfig({
   plugins: [
     purgeCachePlugin({
-      purgers: [
-        {
-          label: 'NextJS',
-          action: getNextjsPurgerAction(),
-          default: true,
+      purgers: {
+        nextjs: {
+          label: 'Next.js',
+          run: createNextJsPathPurger('/'),
         },
-      ],
+      },
     }),
   ],
 });
@@ -40,89 +40,137 @@ export const config = buildConfig({
 
 ## Configuration
 
-The plugin accepts an object with the following properties:
+The plugin accepts the following options:
 
-- `enabled: boolean`: Enable or disable the plugin. Default is `true`.
-- `path?: string`: URL path for the admin page. Default is `/riveo-purge-cache`.
-- `access?: AccessCallback`: Optional function to control access permissions.
-- `purgers: Purger[]`: Array of purger configurations to be triggered on cache purge.
+- `enabled?: boolean`
+  Defaults to `true`.
+- `path?: string`
+  Admin page path. Defaults to `/riveo-purge-cache`.
+- `apiPath?: string`
+  API endpoint path used by the admin UI. Defaults to `path`.
+- `access?: ({ user }) => boolean | Promise<boolean>`
+  Shared access callback used by the menu entry, admin page, and API handler.
+- `purgers: Record<string, Purger>`
+  Keyed purger definitions. The key is the stable ID sent to the API and used in the UI response map.
 
-Example configuration:
+Example:
 
-```typescript
+```ts
+import purgeCachePlugin, {
+  createCloudflarePurger,
+  createHttpPurger,
+  createNextJsPathPurger,
+} from '@riveo/payload-purge-cache-plugin';
+
 purgeCachePlugin({
-  enabled: true,
-  path: '/custom-purge-cache',
-  access: ({ req }) => req.user.role === 'admin',
-  purgers: [
-    {
+  path: '/cache/purge',
+  apiPath: '/api/cache/purge',
+  access: ({ user }) => user?.role === 'admin',
+  purgers: {
+    nextjs: {
       label: 'Next.js',
-      action: getNextjsPurgerAction(),
-      default: false,
+      run: createNextJsPathPurger('/'),
     },
-  ],
+    cloudflare: {
+      label: 'Cloudflare',
+      run: createCloudflarePurger({
+        apiKey: process.env.CLOUDFLARE_API_KEY ?? '',
+        zoneId: process.env.CLOUDFLARE_ZONE_ID ?? '',
+      }),
+    },
+    frontendWebhook: {
+      label: 'Frontend webhook',
+      default: false,
+      run: createHttpPurger(process.env.FRONTEND_PURGE_URL ?? '', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.FRONTEND_PURGE_TOKEN ?? ''}`,
+        },
+      }),
+    },
+  },
 });
 ```
 
-### Built in purgers
+## Purger shape
 
-#### Cloudflare
+A purger is a keyed object with display metadata and a runner:
 
-Purges Cloudflare cache for specified zone.
+```ts
+type Purger = {
+  label: string;
+  default?: boolean;
+  run: () => Promise<{ success: true } | { success: false; error: string }>;
+};
+```
 
-**Usage:** `getCloudflarePurgerAction({ apiKey, zoneId })`
+This makes purgers reusable outside the admin page as well, for example from hooks or custom server code.
 
-**Parameters:**
+## Built-in purgers
 
-- `options`
-  - `apiKey: string` - Cloudflare API key
-  - `zoneId: string` - ZoneID to purge cache for
-  - `hosts?: string[]` - Optional list of hosts to purge
-  - `tags?: string[]` - Optional list of tags to purge
-  - `prefixes?: string[]` - Optional list of prefixes to purge. A prefix has to include hostname but not scheme e.g.: example.com/prefix
-  - `files?: string[]` - Optional list of specific urls to purge. An url has to include scheme, hostname and path e.g.: https://example.com/full/path
+### `createCloudflarePurger(options)`
 
-#### Next.js
+Purges Cloudflare cache for a specific zone.
 
-Purges internal Next.js cache.
-Internally it calls `revalidatePath(basePath, 'layout')` ([Revalidating All Data - Next.js docs](https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data))
+Parameters:
 
-**Usage:** `getNextjsPurgerAction('/')`
+- `apiKey: string`
+- `zoneId: string`
+- `hosts?: string[]`
+- `tags?: string[]`
+- `prefixes?: string[]`
+- `files?: string[]`
 
-**Parameters:**
+If `hosts`, `tags`, `prefixes`, and `files` are all omitted, the purger sends `purge_everything: true`.
 
-- `basePath: string [dafault: '/']` - base path to invalidate cache for. It defaults to `/`
+### `createNextJsPathPurger(basePath = '/')`
 
-#### HTTP
+Triggers Next.js cache revalidation through `revalidatePath(basePath, 'layout')`.
 
-Calls specified HTTP endpoint using `fetch`. Useful when your app is separate from PayloadCMS instance and exposes an endpoint to clear the cache.
+Parameters:
 
-**Usage:** `getHttpPurgerAction(endpoint, options)`
+- `basePath?: string`
 
-**Parameters:**
+### `createHttpPurger(endpoint, options?)`
+
+Calls a generic HTTP endpoint with `fetch`.
+
+Parameters:
 
 - `endpoint: RequestInfo`
 - `options?: RequestInit`
 
-## Usage
+## Admin behavior
 
-After setting it up:
+- The plugin adds a `Purge Cache` entry to the admin settings menu.
+- The page shows all configured purgers with checkboxes.
+- Selected purgers run concurrently.
+- Each purger gets its own success/error status.
+- The UI shows a generic global error for request-level failures such as `403`.
 
-1. Go to your PayloadCMS admin panel.
-2. Click on the “Purge Cache” tab in the sidebar.
-3. Click the button to run all purgers.
-4. View real-time results for each purger.
+## Custom purgers
 
-## Contributing
+You can define your own purger without using the built-in helpers:
 
-We welcome contributions! To contribute:
+```ts
+const purgeSearchIndex = {
+  label: 'Search index',
+  run: async () => {
+    const res = await fetch('https://example.com/api/reindex', {
+      method: 'POST',
+    });
 
-1. **Fork the Repository**: Click the 'Fork' button at the top right of the repository page.
-2. **Clone Your Fork**: Clone your forked repository to your local machine.
-3. **Create a Branch**: Create a new branch for your feature or bugfix.
-4. **Make Your Changes**: Implement your changes and commit them with clear messages.
-5. **Push to GitHub**: Push your changes to your fork on GitHub.
-6. **Submit a Pull Request**: Open a pull request to the main repository.
+    if (!res.ok) {
+      return {
+        success: false,
+        error: `Reindex failed: ${res.status}`,
+      };
+    }
+
+    return { success: true };
+  },
+};
+```
 
 ## License
 
