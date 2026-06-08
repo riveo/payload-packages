@@ -6,7 +6,7 @@ import {
 } from 'payload';
 import { z, type ZodError } from 'zod';
 import { canAccessPurgeCache } from '../access.js';
-import { executePurger } from '../runtime/execute-purger.js';
+import { runPurger } from '../runtime/run-purger.js';
 import type { PurgeCachePluginConfig, PurgerResult } from '../types.js';
 
 export const purgeCacheRequestSchema = z.object({
@@ -72,7 +72,7 @@ export const createApiHandler: (
       parsedRequest.data.purge.map(async (purgerName) => {
         return [
           purgerName,
-          await executePurger(config.purgers[purgerName]),
+          await runPurger(config.purgers[purgerName]),
         ] as const;
       }),
     );

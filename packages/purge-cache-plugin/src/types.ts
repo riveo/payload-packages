@@ -45,7 +45,7 @@ export type PurgerResult =
  *
  * @returns A promise resolving to an object that may contain an error.
  */
-export type PurgerAction = () => Promise<PurgerResult>;
+export type PurgerRunner = () => Promise<PurgerResult>;
 
 export type PurgerMeta = {
   /**
@@ -69,7 +69,7 @@ export type Purger = PurgerMeta & {
    * Function that performs the purge and returns status or error.
    * It has to be a server action.
    */
-  action: PurgerAction;
+  run: PurgerRunner;
 };
 
 export type PurgeCachePluginServerProps = {

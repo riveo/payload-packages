@@ -1,9 +1,9 @@
-import type { PurgerAction } from '../types.js';
+import type { PurgerRunner } from '../types.js';
 
 export const createHttpPurger = (
   endpoint: RequestInfo,
   options?: RequestInit,
-): PurgerAction => {
+): PurgerRunner => {
   return async () => {
     try {
       const response = await fetch(endpoint, options);

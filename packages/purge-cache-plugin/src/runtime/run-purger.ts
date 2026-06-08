@@ -1,6 +1,6 @@
 import type { Purger, PurgerResult } from '../types.js';
 
-export const executePurger = async (purger?: Purger): Promise<PurgerResult> => {
+export const runPurger = async (purger?: Purger): Promise<PurgerResult> => {
   if (!purger) {
     return {
       success: false,
@@ -9,7 +9,7 @@ export const executePurger = async (purger?: Purger): Promise<PurgerResult> => {
   }
 
   try {
-    return await purger.action();
+    return await purger.run();
   } catch (err) {
     console.error(err);
     return {

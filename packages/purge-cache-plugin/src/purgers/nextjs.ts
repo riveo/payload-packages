@@ -1,7 +1,7 @@
 import { revalidatePath } from 'next/cache.js';
-import type { PurgerAction } from '../types.js';
+import type { PurgerRunner } from '../types.js';
 
-export const createNextJsPathPurger = (basePath = '/'): PurgerAction => {
+export const createNextJsPathPurger = (basePath = '/'): PurgerRunner => {
   return () => {
     revalidatePath(basePath, 'layout');
 

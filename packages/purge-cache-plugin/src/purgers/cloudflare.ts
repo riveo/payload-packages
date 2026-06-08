@@ -1,4 +1,4 @@
-import type { PurgerAction } from '../types.js';
+import type { PurgerRunner } from '../types.js';
 
 type CloudflarePurgerFactoryOptions = {
   apiKey: string;
@@ -25,7 +25,7 @@ type CloudflarePurgerFactoryOptions = {
 
 export const createCloudflarePurger = (
   options: CloudflarePurgerFactoryOptions,
-): PurgerAction => {
+): PurgerRunner => {
   return async () => {
     if (!options.apiKey || !options.zoneId) {
       console.warn(
