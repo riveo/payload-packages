@@ -1,6 +1,6 @@
 import type { PurgerAction } from '../types.js';
 
-export const getHttpPurgerAction = (
+export const createHttpPurger = (
   endpoint: RequestInfo,
   options?: RequestInit,
 ): PurgerAction => {

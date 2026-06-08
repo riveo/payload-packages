@@ -23,7 +23,7 @@ type CloudflarePurgerFactoryOptions = {
   files?: string[];
 };
 
-export const getCloudflarePurgerAction = (
+export const createCloudflarePurger = (
   options: CloudflarePurgerFactoryOptions,
 ): PurgerAction => {
   return async () => {

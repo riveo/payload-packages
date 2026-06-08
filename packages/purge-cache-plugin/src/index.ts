@@ -8,6 +8,6 @@ export {
   type PurgerAction,
 } from './types.js';
 
-export { getCloudflarePurgerAction } from './purgers/cloudflare.js';
-export { getNextjsPurgerAction } from './purgers/nextjs.js';
-export { getHttpPurgerAction } from './purgers/http.js';
+export { createCloudflarePurger } from './purgers/cloudflare.js';
+export { createNextJsPathPurger } from './purgers/nextjs.js';
+export { createHttpPurger } from './purgers/http.js';
