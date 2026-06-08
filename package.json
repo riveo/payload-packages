@@ -5,11 +5,11 @@
   "scripts": {
     "build:packages": "pnpm -r --filter './packages/*' build",
     "build:packages-types": "pnpm -r --filter './packages/*' build:types",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "check": "pnpm run '/^check:.+/'",
+    "check:types": "tsc --noEmit",
+    "check:lint": "eslint .",
+    "check:format": "prettier --check .",
+    "format": "prettier . --write"
   },
   "engines": {
     "node": "^22"

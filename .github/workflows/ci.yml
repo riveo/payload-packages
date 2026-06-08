@@ -39,14 +39,8 @@ jobs:
       - name: Prebuild types
         run: pnpm build:packages-types
 
-      - name: Lint
-        run: pnpm --filter "...[origin/${{ env.BASE_REF }}]" run lint
-
-      - name: Check types
-        run: pnpm --filter "...[origin/${{ env.BASE_REF }}]" run typecheck
-
-      - name: Check formatting
-        run: pnpm --filter "...[origin/${{ env.BASE_REF }}]" run format:check
+      - name: Check
+        run: pnpm --filter "...[origin/${{ env.BASE_REF }}]" run check
 
   dependabot:
     name: Dependabot auto merge
