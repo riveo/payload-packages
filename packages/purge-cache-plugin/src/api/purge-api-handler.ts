@@ -6,6 +6,7 @@ import {
 } from 'payload';
 import { z, type ZodError } from 'zod';
 import { canAccessPurgeCache } from '../access.js';
+import { executePurger } from '../purger/execute.js';
 import type { PurgeCachePluginConfig, PurgerResult } from '../types.js';
 
 export const purgeCacheRequestSchema = z.object({
@@ -67,30 +68,14 @@ export const createApiHandler: (
       );
     }
 
-    const promises = parsedRequest.data.purge.map(
-      async (purgerName): Promise<[string, PurgerResult]> => {
-        const purger = config.purgers[purgerName];
-
-        if (!purger) {
-          return [
-            purgerName,
-            {
-              success: false,
-              error: 'Purger not found.',
-            },
-          ];
-        }
-
-        try {
-          return [purgerName, await purger.action()];
-        } catch (err) {
-          console.error(err);
-          return [purgerName, { success: false, error: 'Purge failed.' }];
-        }
-      },
+    const results = await Promise.all(
+      parsedRequest.data.purge.map(async (purgerName) => {
+        return [
+          purgerName,
+          await executePurger(config.purgers[purgerName]),
+        ] as const;
+      }),
     );
-
-    const results = await Promise.all(promises);
 
     return response(req, {
       results: Object.fromEntries(results),
