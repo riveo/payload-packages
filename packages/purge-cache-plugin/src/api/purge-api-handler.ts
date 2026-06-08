@@ -6,7 +6,7 @@ import {
 } from 'payload';
 import { z, type ZodError } from 'zod';
 import { canAccessPurgeCache } from '../access.js';
-import { executePurger } from '../purger/execute.js';
+import { executePurger } from '../runtime/execute-purger.js';
 import type { PurgeCachePluginConfig, PurgerResult } from '../types.js';
 
 export const purgeCacheRequestSchema = z.object({

@@ -31,7 +31,7 @@ export type PurgeCachePluginConfig = {
    */
   access?: AccessCallback;
   /**
-   * List of purger objects that will be executed when the purge action is triggered.
+   * List of purgers objects that will be executed when the purge action is triggered.
    */
   purgers: Record<string, Purger>;
 };
@@ -49,14 +49,14 @@ export type PurgerAction = () => Promise<PurgerResult>;
 
 export type PurgerMeta = {
   /**
-   * Human-readable label for the purger (used in UI and logs).
+   * Human-readable label for the purgers (used in UI and logs).
    */
   label: string;
 
   /**
-   * Option to deselect purger on purgers list by default (defaults to true)
+   * Option to deselect purgers on purgers list by default (defaults to true)
    *
-   * When this option is false, the purger will require manual interaction to run.
+   * When this option is false, the purgers will require manual interaction to run.
    */
   default?: boolean;
 };
