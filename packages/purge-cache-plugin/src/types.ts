@@ -1,38 +1,20 @@
-import type { User } from 'payload';
+import type { TypedUser } from 'payload';
 
-/**
- * Access control callback type used to determine if a user has permission
- * to access the cache purge feature.
- *
- * @param args - Object containing the current authenticated user.
- * @returns A boolean or a promise that resolves to a boolean indicating access permission.
- */
+/** Access callback shared by the admin UI and purge API. */
 export type AccessCallback = (args: {
-  user?: User;
+  user?: TypedUser;
 }) => boolean | Promise<boolean>;
 
 export type PurgeCachePluginConfig = {
-  /**
-   * Enables or disables the plugin. If false, the plugin will not be registered.
-   */
+  /** Disable plugin registration. */
   enabled?: boolean;
-  /**
-   * The route path to expose the plugin UI in the Payload admin panel.
-   * Defaults to '/riveo-purge-cache' if not provided.
-   */
+  /** Admin page path. Defaults to `/riveo-purge-cache`. */
   path?: string;
-  /**
-   * The API route path to trigger purges.
-   * Defaults to the value of `path` option if not provided.
-   */
+  /** API endpoint path. Defaults to `path`. */
   apiPath?: string;
-  /**
-   * Optional access control callback to restrict plugin access in the admin panel.
-   */
+  /** Optional access control for the purge UI and API. */
   access?: AccessCallback;
-  /**
-   * List of purgers objects that will be executed when the purge action is triggered.
-   */
+  /** Purgers keyed by stable ID. */
   purgers: Record<string, Purger>;
 };
 
@@ -40,35 +22,17 @@ export type PurgerResult =
   | { success: true }
   | { success: false; error: string };
 
-/**
- * Function that executes a purge action.
- *
- * @returns A promise resolving to an object that may contain an error.
- */
 export type PurgerRunner = () => Promise<PurgerResult>;
 
 export type PurgerMeta = {
-  /**
-   * Human-readable label for the purgers (used in UI and logs).
-   */
+  /** Label shown in the admin UI. */
   label: string;
-
-  /**
-   * Option to deselect purgers on purgers list by default (defaults to true)
-   *
-   * When this option is false, the purgers will require manual interaction to run.
-   */
+  /** Exclude from default selection when set to `false`. */
   default?: boolean;
 };
 
-/**
- * Represents a single cache purging strategy or destination.
- */
 export type Purger = PurgerMeta & {
-  /**
-   * Function that performs the purge and returns status or error.
-   * It has to be a server action.
-   */
+  /** Function that runs one purge target and returns its result. */
   run: PurgerRunner;
 };
 

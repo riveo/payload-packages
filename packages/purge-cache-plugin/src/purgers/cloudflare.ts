@@ -3,23 +3,13 @@ import type { PurgerRunner } from '../types.js';
 type CloudflarePurgerFactoryOptions = {
   apiKey: string;
   zoneId: string;
-  /**
-   * List of hosts to purge
-   */
+  /** Hostnames to purge. */
   hosts?: string[];
-  /**
-   * List of cache tags to purge
-   */
+  /** Cache tags to purge. */
   tags?: string[];
-  /**
-   * List of prefixes to purge. A prefix has to include hostname but not scheme
-   * e.g.: example.com/prefix
-   */
+  /** Prefixes to purge, including hostname but not scheme. Example: `example.com/prefix`. */
   prefixes?: string[];
-  /**
-   * List of specific urls to purge. An url has to include scheme, hostname and path
-   * e.g.: https://example.com/full/path
-   */
+  /** Full URLs to purge. Example: `https://example.com/full/path`. */
   files?: string[];
 };
 
