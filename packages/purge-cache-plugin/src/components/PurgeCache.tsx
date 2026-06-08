@@ -1,13 +1,13 @@
 import { DefaultTemplate } from '@payloadcms/next/templates';
-import { Gutter, RenderTitle } from '@payloadcms/ui';
+import { Gutter, RenderTitle, SetStepNav } from '@payloadcms/ui';
 import { notFound, redirect } from 'next/navigation.js';
 import type { AdminViewServerProps } from 'payload';
 import type { PurgeCachePluginServerProps } from '../types.js';
-import PurgeCacheClient from './PurgeCacheClient.js';
-
 import './styles.scss';
+import PurgeCacheClient from './PurgeCacheClient.js';
+import { canAccessPurgeCache } from '../access.js';
 
-type CloudflareProps = AdminViewServerProps & PurgeCachePluginServerProps;
+type PurgeCacheProps = AdminViewServerProps & PurgeCachePluginServerProps;
 
 const PurgeCache = async ({
   initPageResult,
@@ -15,18 +15,19 @@ const PurgeCache = async ({
   payload,
   params,
   searchParams,
-}: CloudflareProps) => {
-  if (!initPageResult.req?.user) {
+}: PurgeCacheProps) => {
+  if (
+    !(await canAccessPurgeCache({
+      user: initPageResult?.req?.user,
+      access: purgeCachePlugin.access,
+    }))
+  ) {
     return redirect(
-      `${payload.getAdminURL()}/login?redirect=${payload.getAdminURL()}${purgeCachePlugin.path}`,
+      `${payload.getAdminURL()}/login?redirect=${payload.getAdminURL()}${purgeCachePlugin?.path}`,
     );
   }
 
-  const allowAccess = purgeCachePlugin.access
-    ? !(await purgeCachePlugin.access({ user: initPageResult.req.user }))
-    : true;
-
-  if (!initPageResult.permissions.canAccessAdmin || !allowAccess) {
+  if (!initPageResult.permissions.canAccessAdmin) {
     return notFound();
   }
 
@@ -41,9 +42,13 @@ const PurgeCache = async ({
       user={initPageResult?.req.user ?? undefined}
       visibleEntities={initPageResult.visibleEntities}
     >
+      <SetStepNav nav={[{ label: 'Purge Cache' }]} />
       <Gutter>
         <RenderTitle title="Purge Cache" />
-        <PurgeCacheClient purgers={purgeCachePlugin.purgers} />
+        <PurgeCacheClient
+          purgers={purgeCachePlugin.purgers}
+          apiPath={purgeCachePlugin.apiPath}
+        />
       </Gutter>
     </DefaultTemplate>
   );

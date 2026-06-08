@@ -7,12 +7,18 @@ import {
   SuccessIcon,
   Button,
   CheckboxInput,
+  useConfig,
 } from '@payloadcms/ui';
 import { useState, useTransition } from 'react';
-import type { Purger } from '../types.js';
+import type {
+  PurgeCacheRequestData,
+  PurgeCacheResponse,
+} from '../api/purge-api-handler.js';
+import type { PurgerMeta, PurgerResult } from '../types.js';
 
 type PurgeCacheButtonProps = {
-  purgers: Purger[];
+  purgers: Record<string, PurgerMeta>;
+  apiPath: `/${string}`;
 };
 
 const PurgerStatus = ({
@@ -20,7 +26,7 @@ const PurgerStatus = ({
   result,
 }: {
   isLoading?: boolean;
-  result?: { error?: string };
+  result?: PurgerResult;
 }) => {
   if (isLoading) {
     return <MoreIcon />;
@@ -30,45 +36,83 @@ const PurgerStatus = ({
     return <LineIcon />;
   }
 
-  if (result?.error) {
+  if (!result.success) {
     return <ErrorIcon />;
   }
 
   return <SuccessIcon />;
 };
 
-const PurgeCacheClient = ({ purgers }: PurgeCacheButtonProps) => {
+const PurgeCacheClient = ({ purgers, apiPath }: PurgeCacheButtonProps) => {
   const [isLoading, startTransition] = useTransition();
-  const [results, setResults] = useState<({ error?: string } | undefined)[]>(
-    [],
+  const [results, setResults] = useState<Record<string, PurgerResult>>({});
+  const [error, setError] = useState<string>();
+
+  const {
+    config: {
+      routes: { api: apiRoute },
+    },
+  } = useConfig();
+
+  const [selectedPurgers, setSelectedPurgers] = useState<
+    Record<string, boolean>
+  >(
+    Object.fromEntries(
+      Object.entries(purgers).map(([key, value]) => {
+        return [key, value.default !== false];
+      }),
+    ),
   );
 
-  const [selectedPurgersIds, setSelectedPurgersIds] = useState(
-    purgers.map((purger) => purger.default !== false),
-  );
-
-  const togglePurger = (id: number) => {
-    setSelectedPurgersIds((previous) => {
+  const togglePurger = (id: string) => {
+    setSelectedPurgers((previous) => {
       return {
         ...previous,
-        [id]: !previous?.[id],
+        [id]: !previous[id],
       };
     });
   };
 
   const purgeCache = () => {
     startTransition(async () => {
-      const results = await Promise.all(
-        purgers.map((purger, i) => {
-          if (selectedPurgersIds[i]) {
-            return purger.action();
-          }
+      const purgersToExecute: string[] = [];
+      for (const purger of Object.keys(selectedPurgers)) {
+        if (selectedPurgers[purger]) {
+          purgersToExecute.push(purger);
+        }
+      }
 
-          return Promise.resolve(undefined);
-        }),
-      );
+      setError(undefined);
+      setResults({});
 
-      setResults(results);
+      if (purgersToExecute.length === 0) {
+        return;
+      }
+
+      const res = await fetch(`${apiRoute}${apiPath}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          purge: purgersToExecute,
+        } satisfies PurgeCacheRequestData),
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as PurgeCacheResponse;
+
+        setResults(data.results);
+        return;
+      }
+
+      switch (res.status) {
+        case 403:
+          setError('You do not have permission to purge cache.');
+          break;
+        default:
+          setError('Could not purge cache.');
+      }
     });
   };
 
@@ -76,38 +120,39 @@ const PurgeCacheClient = ({ purgers }: PurgeCacheButtonProps) => {
     <div className="riveo-purge-cache-plugin-container">
       <div className="riveo-purge-cache-plugin-container__purgers">
         <ul>
-          {purgers.map(({ label }, i) => (
-            <li key={i}>
+          {Object.entries(purgers).map(([key, { label }]) => (
+            <li key={key}>
               <div>
                 <CheckboxInput
-                  onToggle={() => togglePurger(i)}
-                  checked={selectedPurgersIds[i]}
+                  onToggle={() => togglePurger(key)}
+                  checked={selectedPurgers[key]}
                   label={label}
-                  id={`riveo-cache-purger-${i}`}
+                  readOnly={isLoading}
+                  id={`riveo-cache-purger-${key}`}
                 />
 
                 <div className="purger-status-container">
                   <PurgerStatus
-                    isLoading={selectedPurgersIds[i] && isLoading}
-                    result={results?.[i]}
+                    isLoading={selectedPurgers[key] && isLoading}
+                    result={results?.[key]}
                   />
                 </div>
               </div>
-              {results?.[i]?.error && (
+              {results[key]?.success === false && (
                 <pre className="purger-error">
-                  {JSON.stringify(results[i].error)}
+                  {results[key]?.error ?? 'Purge failed.'}
                 </pre>
               )}
             </li>
           ))}
         </ul>
       </div>
-
       <div className="riveo-purge-cache-plugin-container__button-row">
         <Button onClick={() => purgeCache()} disabled={isLoading}>
           Purge selected caches
         </Button>
       </div>
+      {error && <pre className="purger-error">{error}</pre>}
     </div>
   );
 };

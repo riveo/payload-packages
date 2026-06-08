@@ -5,9 +5,9 @@ export default purgeCachePlugin;
 export {
   type PurgeCachePluginConfig,
   type Purger,
-  type PurgerAction,
+  type PurgerRunner,
 } from './types.js';
 
-export { getCloudflarePurgerAction } from './purger/cloudflare.js';
-export { getNextjsPurgerAction } from './purger/nextjs.js';
-export { getHttpPurgerAction } from './purger/http.js';
+export { createCloudflarePurger } from './purgers/cloudflare.js';
+export { createNextJsPathPurger } from './purgers/nextjs.js';
+export { createHttpPurger } from './purgers/http.js';

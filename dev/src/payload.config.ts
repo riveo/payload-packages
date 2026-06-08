@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import { sqliteAdapter } from '@payloadcms/db-sqlite';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import purgeCachePlugin, {
-  getNextjsPurgerAction,
+  createNextJsPathPurger,
 } from '@riveo/payload-purge-cache-plugin';
 import riveoUtilsPlugin, { groupContentTypes } from '@riveo/payload-utils';
 import { buildConfig, type CollectionConfig } from 'payload';
@@ -55,12 +55,12 @@ export default buildConfig({
   sharp,
   plugins: [
     purgeCachePlugin({
-      purgers: [
-        {
+      purgers: {
+        nextjs: {
           label: 'Frontend',
-          action: getNextjsPurgerAction('/'),
+          run: createNextJsPathPurger('/'),
         },
-      ],
+      },
     }),
     riveoUtilsPlugin(),
   ],

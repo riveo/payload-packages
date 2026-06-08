@@ -1,45 +1,76 @@
-import type { Plugin } from 'payload';
+import { definePlugin } from 'payload';
+import { createApiHandler } from './api/purge-api-handler.js';
 import type {
   PurgeCachePluginConfig,
   PurgeCachePluginServerProps,
 } from './types.js';
 
 const DEFAULT_PATH = '/riveo-purge-cache';
+const PLUGIN_SLUG = 'riveo-purge-cache';
 
-const purgeCachePlugin = (pluginConfig: PurgeCachePluginConfig): Plugin => {
-  return (incomingConfig) => {
-    if (
-      pluginConfig?.enabled === false ||
-      pluginConfig.purgers.length === 0 ||
-      !incomingConfig.admin
-    ) {
-      return incomingConfig;
+declare module 'payload' {
+  interface RegisteredPlugins {
+    [PLUGIN_SLUG]: PurgeCachePluginConfig;
+  }
+}
+
+const normalizePath = (path: string): `/${string}` =>
+  `/${path.replace(/^\//g, '')}`;
+
+const purgeCachePlugin = definePlugin<PurgeCachePluginConfig>({
+  slug: PLUGIN_SLUG,
+  plugin: ({ plugins, config, ...pluginConfig }) => {
+    if (pluginConfig?.enabled === false || !config.admin) {
+      return config;
     }
 
-    const path = (pluginConfig?.path ?? DEFAULT_PATH).replace(/^\/{2,}/, '/');
+    const path = normalizePath(pluginConfig?.path ?? DEFAULT_PATH);
+    const apiPath = normalizePath(pluginConfig?.apiPath ?? path);
+
+    const purgers = Object.fromEntries(
+      Object.entries(pluginConfig.purgers).map(([name, purger]) => {
+        return [
+          name,
+          {
+            label: purger.label,
+            default: purger.default,
+          },
+        ];
+      }),
+    );
+
     const serverProps: PurgeCachePluginServerProps = {
       purgeCachePlugin: {
-        purgers: pluginConfig.purgers,
+        purgers,
         path,
+        apiPath,
         access: pluginConfig.access,
       },
     };
 
     return {
-      ...incomingConfig,
+      ...config,
+      endpoints: [
+        ...(config.endpoints ?? []),
+        {
+          method: 'post',
+          path: apiPath,
+          handler: createApiHandler(pluginConfig),
+        },
+      ],
       admin: {
-        ...incomingConfig.admin,
+        ...config.admin,
         components: {
-          ...(incomingConfig.admin?.components ?? {}),
-          afterNavLinks: [
-            ...(incomingConfig.admin?.components?.afterNavLinks ?? []),
+          ...(config.admin?.components ?? {}),
+          settingsMenu: [
+            ...(config.admin?.components?.settingsMenu ?? []),
             {
-              path: '@riveo/payload-purge-cache-plugin/components#AfterNavLinks',
+              path: '@riveo/payload-purge-cache-plugin/components#ToolsMenu',
               serverProps,
             },
           ],
           views: {
-            ...(incomingConfig.admin?.components?.views ?? {}),
+            ...(config.admin?.components?.views ?? {}),
             riveoPurgeCache: {
               Component: {
                 path: '@riveo/payload-purge-cache-plugin/components#PurgeCache',
@@ -52,7 +83,7 @@ const purgeCachePlugin = (pluginConfig: PurgeCachePluginConfig): Plugin => {
         },
       },
     };
-  };
-};
+  },
+});
 
 export default purgeCachePlugin;
